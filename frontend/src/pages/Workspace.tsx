@@ -14,12 +14,13 @@ const Workspace: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex font-sans selection:bg-white/20 relative">
+    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex flex-col md:flex-row font-sans selection:bg-white/20 relative">
       <BackgroundOverlay opacity={0.01} />
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#09090b] border-r border-white/10 flex flex-col fixed h-full z-40">
+      
+      {/* Sidebar (Desktop) */}
+      <aside className="hidden md:flex w-64 bg-[#09090b] border-r border-white/10 flex-col fixed h-full z-40">
         <div className="h-14 flex items-center px-6 border-b border-white/10">
-          <Link to="/" className="text-lg font-bold tracking-widest text-white">ODIA.AI</Link>
+          <Link to="/" className="text-lg font-bold tracking-widest text-white">BHASA.ODIA</Link>
           <span className="text-zinc-500 text-sm ml-2">/ Workspace</span>
         </div>
         <nav className="flex-1 py-6 px-4 flex flex-col gap-2">
@@ -45,21 +46,42 @@ const Workspace: React.FC = () => {
         </div>
       </aside>
 
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden fixed bottom-0 w-full bg-[#09090b] border-t border-white/10 flex justify-around items-center h-16 z-50 px-2 pb-safe">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-white' : 'text-zinc-500'}`}
+            >
+              <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+              <span className="text-[10px] font-medium truncate max-w-[60px]">{item.name.split(' ')[0]}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
       {/* Main Content */}
-      <main className="flex-1 ml-64 bg-[#0e0e0e] min-h-screen">
-        <div className="h-14 border-b border-white/10 flex items-center px-8 bg-[#09090b] sticky top-0 z-30 justify-between">
+      <main className="flex-1 md:ml-64 bg-[#0e0e0e] min-h-screen pb-20 md:pb-0">
+        <div className="h-14 border-b border-white/10 flex items-center px-4 md:px-8 bg-[#09090b] sticky top-0 z-30 justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" className="text-zinc-500 hover:text-white transition-colors flex items-center gap-1">
               <span className="material-symbols-outlined text-lg">arrow_back</span>
-              <span className="text-xs uppercase tracking-widest font-medium">Home</span>
+              <span className="text-xs uppercase tracking-widest font-medium hidden sm:inline">Home</span>
             </Link>
-            <span className="text-zinc-800">|</span>
-            <h1 className="text-white font-medium text-sm">
+            <span className="text-zinc-800 hidden sm:inline">|</span>
+            <div className="md:hidden flex items-center gap-2">
+               <span className="text-xs font-bold tracking-widest text-white">BHASA.ODIA</span>
+               <span className="text-zinc-500 text-[10px]">/ Workspace</span>
+            </div>
+            <h1 className="text-white font-medium text-sm hidden md:block">
               {navItems.find(item => item.path === location.pathname)?.name || 'Dashboard'}
             </h1>
           </div>
         </div>
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           <Outlet />
         </div>
       </main>

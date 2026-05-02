@@ -14,7 +14,7 @@ const ApiDocs: React.FC = () => {
             <span className="text-xs uppercase tracking-widest font-medium">Back to Home</span>
           </Link>
           <span className="text-zinc-700">|</span>
-          <span className="text-lg font-bold tracking-widest text-white">ODIA.AI API</span>
+          <span className="text-lg font-bold tracking-widest text-white">BHASA.ODIA API</span>
         </div>
       </header>
 
@@ -32,7 +32,7 @@ const ApiDocs: React.FC = () => {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold border-b border-white/10 pb-2">Synthesis Endpoint</h2>
             <div className="bg-[#1c1b1b] rounded-lg p-4 font-mono text-sm border border-white/5 flex items-center justify-between">
-              <code className="text-emerald-400">POST https://api.odia.ai/v1/synthesize</code>
+              <code className="text-emerald-400">POST https://api.bhasa-odia.ai/v1/synthesize</code>
               <span className="text-zinc-600 text-xs">JSON</span>
             </div>
           </div>
@@ -74,7 +74,7 @@ const ApiDocs: React.FC = () => {
         </section>
 
         <footer className="mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-zinc-500 text-sm">© 2026 ODIA.AI Research Lab. All rights reserved.</p>
+          <p className="text-zinc-500 text-sm">© 2026 BHASA.ODIA Research Lab. All rights reserved.</p>
           <div className="flex gap-6 text-xs text-zinc-400 uppercase tracking-widest font-medium">
             <a href="#" className="hover:text-white transition-colors">Pricing</a>
             <a href="#" className="hover:text-white transition-colors">Status</a>

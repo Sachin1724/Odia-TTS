@@ -194,7 +194,7 @@ const Collect: React.FC = () => {
             <span className="material-symbols-outlined text-lg">home</span>
           </Link>
           <div className="flex items-center gap-2 md:gap-3 overflow-hidden">
-            <Link to="/workspace/analytics" className="text-sm md:text-lg font-bold tracking-widest text-white hover:text-white/80 transition-colors flex-shrink-0">ODIA.AI</Link>
+            <Link to="/workspace/analytics" className="text-sm md:text-lg font-bold tracking-widest text-white hover:text-white/80 transition-colors flex-shrink-0">BHASA.ODIA</Link>
             <span className="text-zinc-500 text-sm">/</span>
             <span className="font-mono text-zinc-300 text-[10px] md:text-xs truncate hidden sm:inline">OdiaTTS Collection</span>
             <div className="bg-zinc-800 text-white/70 px-2 py-0.5 rounded text-[10px] font-mono uppercase border border-white/10 flex-shrink-0">
