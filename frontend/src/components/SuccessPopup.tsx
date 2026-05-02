@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Share2, PlusCircle, Users, Heart } from 'lucide-react';
+import { Share2, PlusCircle, Users, Heart } from 'lucide-react';
 
 interface SuccessPopupProps {
   isOpen: boolean;
@@ -48,9 +48,9 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
       pathLength: 1,
       opacity: 1,
       d: [
-        "M10 50 L20 30 L30 70 L40 40 L50 60 L60 20 L70 80 L80 50 L90 50", // Waveform
-        "M10 50 L20 50 L30 50 L40 50 L50 50 L60 50 L70 50 L80 50 L90 50", // Flat line
-        "M20 50 L40 70 L80 30" // Checkmark
+        "M10 50 L20 30 L30 70 L40 40 L50 60 L60 20 L70 80 L80 50 L90 50",
+        "M10 50 L20 50 L30 50 L40 50 L50 50 L60 50 L70 50 L80 50 L90 50",
+        "M20 50 L40 70 L80 30"
       ],
       transition: {
         duration: 1.2,
@@ -58,7 +58,8 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
         ease: "easeInOut"
       }
     }
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
 
   return (
     <AnimatePresence>
