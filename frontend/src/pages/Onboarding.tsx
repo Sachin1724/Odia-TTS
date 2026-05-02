@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,8 @@ const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#141313] text-[#e5e2e1] font-sans min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="bg-[#141313] text-[#e5e2e1] font-sans min-h-screen flex flex-col items-center justify-center p-8 relative">
+      <BackgroundOverlay opacity={0.01} />
       <div className="w-full max-w-lg relative">
         <Link to="/" className="absolute -top-12 left-0 flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-medium">
           <span className="material-symbols-outlined text-sm">arrow_back</span>

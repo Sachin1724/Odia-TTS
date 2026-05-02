@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
-const odiaPattern = '/assets/odia_pattern.png';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const Landing: React.FC = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -26,17 +26,7 @@ const Landing: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Mouse parallax effect
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    setMousePos({ x: clientX, y: clientY });
-  };
-
-  const bgX = useSpring((mousePos.x - window.innerWidth / 2) / 50, { stiffness: 50, damping: 30 });
-  const bgY = useSpring((mousePos.y - window.innerHeight / 2) / 50, { stiffness: 50, damping: 30 });
-
   const { scrollYProgress } = useScroll();
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.5], [0.01, 0.005]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
 
   const words = "Transforming Odisha’s Voice into a Living Digital Legacy".split(" ");
@@ -49,28 +39,9 @@ const Landing: React.FC = () => {
   return (
     <div 
       className="bg-[#09090b] text-white font-sans antialiased selection:bg-white/20 min-h-screen overflow-x-hidden relative"
-      onMouseMove={handleMouseMove}
     >
       {/* Background Micro Motion Layer */}
-      <motion.div 
-        className="fixed inset-0 pointer-events-none z-[9999]"
-        style={{ 
-          backgroundImage: `url(${odiaPattern})`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '500px',
-          opacity: bgOpacity,
-          x: bgX,
-          y: bgY
-        }}
-        animate={{
-          backgroundPosition: ['0% 0%', '10% 10%'],
-        }}
-        transition={{
-          duration: 100,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
+      <BackgroundOverlay interactive opacity={[0.01, 0.005]} />
 
       {/* Custom Cursor Ripple (Hero Section) */}
       <AnimatePresence>

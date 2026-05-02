@@ -1,5 +1,5 @@
-import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const Workspace: React.FC = () => {
   const location = useLocation();
@@ -13,7 +13,8 @@ const Workspace: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex font-sans selection:bg-white/20">
+    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex font-sans selection:bg-white/20 relative">
+      <BackgroundOverlay opacity={0.01} />
       {/* Sidebar */}
       <aside className="w-64 bg-[#09090b] border-r border-white/10 flex flex-col fixed h-full z-40">
         <div className="h-14 flex items-center px-6 border-b border-white/10">

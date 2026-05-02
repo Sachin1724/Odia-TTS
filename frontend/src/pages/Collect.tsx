@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import SuccessPopup from '../components/SuccessPopup';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const API_URL = import.meta.env.VITE_GAS_API_URL || 'YOUR_GAS_ENDPOINT_URL_HERE';
 
@@ -184,7 +184,8 @@ const Collect: React.FC = () => {
   if (!metadata) return null;
 
   return (
-    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex flex-col font-sans selection:bg-white/20">
+    <div className="bg-[#141313] text-[#e5e2e1] min-h-screen flex flex-col font-sans selection:bg-white/20 relative">
+      <BackgroundOverlay opacity={0.01} />
       {/* TopAppBar */}
       <header className="bg-[#09090b] text-white fixed top-0 w-full z-50 border-b border-white/10 flex justify-between items-center px-4 md:px-6 h-14">
         <div className="flex items-center gap-2 md:gap-4 overflow-hidden">

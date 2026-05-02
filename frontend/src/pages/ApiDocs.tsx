@@ -1,9 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const ApiDocs: React.FC = () => {
   return (
-    <div className="bg-[#09090b] text-white font-sans min-h-screen selection:bg-white/20">
+    <div className="bg-[#09090b] text-white font-sans min-h-screen selection:bg-white/20 relative">
+      <BackgroundOverlay opacity={0.01} />
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-[#09090b] border-b border-white/10 flex justify-between items-center px-6 h-14">
         <div className="flex items-center gap-4">
