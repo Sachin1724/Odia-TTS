@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+const odiaPattern = '/assets/odia_pattern.png';
 
 const Landing: React.FC = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -52,9 +53,9 @@ const Landing: React.FC = () => {
     >
       {/* Background Micro Motion Layer */}
       <motion.div 
-        className="fixed inset-0 pointer-events-none z-0"
+        className="fixed inset-0 pointer-events-none z-[9999]"
         style={{ 
-          backgroundImage: "url('/src/assets/odia_pattern.png')",
+          backgroundImage: `url(${odiaPattern})`,
           backgroundRepeat: 'repeat',
           backgroundSize: '500px',
           opacity: bgOpacity,

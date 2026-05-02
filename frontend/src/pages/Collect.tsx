@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import SuccessPopup from '../components/SuccessPopup';
 
 const API_URL = import.meta.env.VITE_GAS_API_URL || 'YOUR_GAS_ENDPOINT_URL_HERE';
 
@@ -22,7 +23,7 @@ const TEXT_DATA = [
   {t:"କଟକ ରୂପା ଗହଣା ପ୍ରସିଦ୍ଧ।",r:"Kataka roopaa gahanaa prasiddha.",c:"Cultural",tip:"Emphasise 'roopaa gahanaa'."},
   {t:"ଆମ ସଂସ୍କୃତି ଆମ ପରିଚୟ।",r:"Aama sanskriti aama parichaya.",c:"Cultural",tip:"Short and meaningful — let it land."},
   {t:"ଓଡ଼ିଶୀ ନୃତ୍ୟ ଆମ ଗୌରବ।",r:"Odissi nritya aama gaurava.",c:"Cultural",tip:"Pride in classical dance."},
-  {t:"ମହାନଦୀ ଓଡ଼ିଶାର ଜୀବନ ରେଖା।",r:"Mahanadi Odishaara jeebana rekhaa.",c:"Geography",tip:"Slow, clear pronunciation of 'Mahanadi'."},
+  {t:"ମහାନଦୀ ଓଡ଼ିଶାର ଜୀବନ ରେଖା।",r:"Mahanadi Odishaara jeebana rekhaa.",c:"Geography",tip:"Slow, clear pronunciation of 'Mahanadi'."},
   {t:"ଚିଲିକା ହ୍ରଦ ବହୁ ପ୍ରଜାତିର ପକ୍ଷୀଙ୍କ ଆଶ୍ରୟ।",r:"Chilika hrada bahu prajaaatira pakshiinka aashraya.",c:"Geography",tip:"Nature documentary feel — slow and clear."},
   {t:"ଏ ବର୍ଷ ଧାନ ଭଲ ହୋଇଛି।",r:"E barsa dhaana bhala hoi achhi.",c:"Geography",tip:"Rural/agricultural, matter-of-fact."},
   {t:"ଏ ବର୍ଷ ବର୍ଷା ବହୁତ ଅଧିକ ହୋଇଛି।",r:"E barsa barshaa bahuta adhika hoi achhi.",c:"Weather & nature",tip:"Conversational weather observation."},
@@ -50,6 +51,8 @@ const Collect: React.FC = () => {
   const chunksRef = useRef<Blob[]>([]);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [contributionStats, setContributionStats] = useState({ totalVoices: 0, contributorRank: 0 });
 
   useEffect(() => {
     const savedMetadata = localStorage.getItem('odiaTtsMetadata');
@@ -135,26 +138,27 @@ const Collect: React.FC = () => {
 
       if (API_URL === 'YOUR_GAS_ENDPOINT_URL_HERE') {
           console.log("Mock Payload (API not set):", payload);
-          alert("Audio captured! To save to Google Drive, please deploy the Apps Script and set VITE_GAS_API_URL in .env");
+          setContributionStats({ 
+            totalVoices: 0, 
+            contributorRank: 0 
+          });
+          setShowSuccess(true);
       } else {
           const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify(payload),
-            // No-cors or simple POST is usually needed for GAS unless preflight is handled perfectly
           });
           
-          // Note: GAS might return opaque response with no-cors, so we assume success if it doesn't throw.
-          console.log("Submitted to GAS", response);
-          alert("Saved successfully!");
-      }
-
-      // Reset for next sentence
-      setTranslatedText('');
-      setAudioBlob(null);
-      if (currentIndex < TEXT_DATA.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        alert("You have completed all sentences! Thank you.");
+          const result = await response.json();
+          console.log("Submitted to GAS", result);
+          
+          if (result.stats) {
+            setContributionStats({
+              totalVoices: result.stats.totalVoices,
+              contributorRank: result.stats.contributorRank
+            });
+          }
+          setShowSuccess(true);
       }
       
     } catch (err) {
@@ -162,6 +166,18 @@ const Collect: React.FC = () => {
       alert('Failed to save data. See console for details.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    // Reset for next sentence
+    setTranslatedText('');
+    setAudioBlob(null);
+    if (currentIndex < TEXT_DATA.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      navigate('/workspace/analytics');
     }
   };
 
@@ -254,7 +270,7 @@ const Collect: React.FC = () => {
                   <span>Previous</span>
                 </button>
 
-                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:w-auto">
+                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full md:w-auto">
                   {!isRecording ? (
                   <button 
                     onClick={handleStartRecording}
@@ -273,20 +289,44 @@ const Collect: React.FC = () => {
                   </button>
                 )}
 
-                <button 
-                  onClick={handleSave}
-                  disabled={!audioBlob || !translatedText || isSubmitting}
-                  className={`w-full md:w-auto px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
-                >
-                  <span>{isSubmitting ? 'Saving...' : 'Save & Next'}</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <button 
+                    onClick={handleSave}
+                    disabled={!audioBlob || !translatedText || isSubmitting}
+                    className={`flex-1 md:flex-none px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
+                  >
+                    <span>{isSubmitting ? 'Saving...' : 'Save'}</span>
+                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      setTranslatedText('');
+                      setAudioBlob(null);
+                      setCurrentIndex(Math.min(TEXT_DATA.length - 1, currentIndex + 1));
+                    }}
+                    disabled={currentIndex === TEXT_DATA.length - 1 || isSubmitting}
+                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === TEXT_DATA.length - 1 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
+                    title="Skip to next sentence"
+                  >
+                    <span>Next</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </button>
+                </div>
                 </div>
               </div>
             </div>
           </div>
         </main>
       </div>
+
+      <SuccessPopup 
+        isOpen={showSuccess} 
+        onClose={() => setShowSuccess(false)} 
+        onRecordAnother={handleSuccessClose}
+        contributorCount={contributionStats.contributorRank}
+        totalVoices={contributionStats.totalVoices}
+      />
     </div>
   );
 };

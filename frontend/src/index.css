@@ -11,4 +11,26 @@
     position: relative;
     z-index: 1;
   }
+
+  /* Global Fallback Background for other pages */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/assets/odia_pattern.png');
+    background-repeat: repeat;
+    background-size: 500px;
+    opacity: 0.06;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    body::after {
+      background-size: 300px;
+    }
+  }
 }

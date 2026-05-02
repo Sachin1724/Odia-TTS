@@ -53,11 +53,58 @@ function doPost(e) {
     
     csvFile.setContent(csvContent + newRow);
     
+    // Calculate Stats
+    const allLines = (csvContent + newRow).split('\n').filter(line => line.trim() !== '');
+    const totalVoices = allLines.length - 1; // Subtract header
+    
+    // Calculate contributor rank (count unique speakers before this one + 1)
+    const speakerIds = allLines.slice(1).map(line => line.split(',')[1]);
+    const uniqueSpeakers = [...new Set(speakerIds)];
+    const contributorRank = uniqueSpeakers.length;
+
     return ContentService.createTextOutput(JSON.stringify({ 
       status: 'success', 
       message: 'Data saved successfully',
       speakerId: speakerId,
-      audioUrl: savedAudioFile.getUrl()
+      audioUrl: savedAudioFile.getUrl(),
+      stats: {
+        totalVoices: totalVoices,
+        contributorRank: contributorRank
+      }
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      status: 'error', 
+      message: error.toString() 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Handle GET requests for analytics
+function doGet(e) {
+  try {
+    const { csvFile } = setupEnvironment();
+    const csvContent = csvFile.getBlob().getDataAsString();
+    const lines = csvContent.split('\n').filter(line => line.trim() !== '');
+    
+    const totalVoices = lines.length - 1;
+    const speakerIds = lines.slice(1).map(line => line.split(',')[1]);
+    const uniqueSpeakers = [...new Set(speakerIds)].length;
+    
+    // Estimate hours (assuming ~3 seconds per recording)
+    const estimatedHours = ((totalVoices * 3) / 3600).toFixed(1);
+
+    const stats = {
+      totalVoices: totalVoices,
+      activeSpeakers: uniqueSpeakers,
+      hoursCollected: parseFloat(estimatedHours),
+      districts: [...new Set(lines.slice(1).map(line => line.split(',')[5]))].length
+    };
+
+    return ContentService.createTextOutput(JSON.stringify({ 
+      status: 'success', 
+      stats: stats 
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
