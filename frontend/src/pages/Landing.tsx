@@ -36,9 +36,14 @@ const Landing: React.FC = () => {
     setTimeout(() => setShowToast(null), 3000);
   };
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <div 
       className="bg-[#09090b] text-white font-sans antialiased selection:bg-white/20 min-h-screen overflow-x-hidden relative"
+      onMouseMove={handleMouseMove}
     >
       {/* Background Micro Motion Layer */}
       <BackgroundOverlay interactive opacity={[0.01, 0.005]} />
