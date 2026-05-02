@@ -36,7 +36,7 @@ const Landing: React.FC = () => {
   const bgY = useSpring((mousePos.y - window.innerHeight / 2) / 50, { stiffness: 50, damping: 30 });
 
   const { scrollYProgress } = useScroll();
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.5], [0.1, 0.05]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.5], [0.01, 0.005]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
 
   const words = "Transforming Odisha’s Voice into a Living Digital Legacy".split(" ");
