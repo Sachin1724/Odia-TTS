@@ -32,7 +32,7 @@ const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#141313] text-[#e5e2e1] font-sans min-h-screen flex flex-col items-center pt-20 md:pt-8 md:justify-center p-8 relative">
+    <div className="bg-[#141313] text-[#e5e2e1] font-sans min-h-screen flex flex-col items-center pt-20 md:pt-8 md:justify-center p-8 pb-24 md:pb-8 relative">
       <BackgroundOverlay opacity={0.01} />
       <div className="w-full max-w-lg relative">
         <Link to="/" className="absolute -top-12 left-0 flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-medium">

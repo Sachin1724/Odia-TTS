@@ -8,10 +8,12 @@ import SpeakerProfile from './pages/SpeakerProfile';
 import Library from './pages/Library';
 import ApiSettings from './pages/ApiSettings';
 import ApiDocs from './pages/ApiDocs';
+import MobileNavbar from './components/MobileNavbar';
 
 function App() {
   return (
     <Router>
+      <MobileNavbar />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/onboarding" element={<Onboarding />} />

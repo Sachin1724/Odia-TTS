@@ -46,23 +46,6 @@ const Workspace: React.FC = () => {
         </div>
       </aside>
 
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 w-full bg-[#09090b] border-t border-white/10 flex justify-around items-center h-16 z-50 px-2 pb-safe">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-white' : 'text-zinc-500'}`}
-            >
-              <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
-              <span className="text-[10px] font-medium truncate max-w-[60px]">{item.name.split(' ')[0]}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
       {/* Main Content */}
       <main className="flex-1 md:ml-64 bg-[#0e0e0e] min-h-screen pb-20 md:pb-0">
         <div className="h-14 border-b border-white/10 flex items-center px-4 md:px-8 bg-[#09090b] sticky top-0 z-30 justify-between">
