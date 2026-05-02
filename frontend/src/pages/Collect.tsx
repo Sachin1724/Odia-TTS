@@ -213,7 +213,7 @@ const Collect: React.FC = () => {
       {/* Main Layout */}
       <div className="flex flex-1 pt-14 h-screen overflow-hidden">
         {/* Canvas */}
-        <main className="flex-1 overflow-y-auto bg-[#0e0e0e] relative flex items-center justify-center p-6 md:p-12">
+        <main className="flex-1 overflow-y-auto bg-[#0e0e0e] relative flex flex-col md:items-center md:justify-center p-6 md:p-12 pt-10">
           <div className="w-full max-w-3xl flex flex-col gap-8">
             {/* Step 1: Reference */}
             <div className="flex flex-col gap-2">
