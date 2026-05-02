@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contributor Registration - OdiaTTS Research</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#636565",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-dim": "#141313",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#46464e",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#141313",
+                        "inverse-primary": "#5d5f5f",
+                        "on-secondary-container": "#bcbbc5",
+                        "surface-tint": "#c6c6c7",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "outline-variant": "#444748",
+                        "primary-container": "#e2e2e2",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-high": "#2a2a2a",
+                        "secondary-fixed-dim": "#c6c5cf",
+                        "on-tertiary": "#2f3131",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#c4c7c8",
+                        "inverse-on-surface": "#313030",
+                        "surface-container-highest": "#353434",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-tertiary-container": "#636565",
+                        "secondary-container": "#4a4b53",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed-variant": "#454747",
+                        "primary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "background": "#141313",
+                        "secondary-fixed": "#e3e1ec",
+                        "on-secondary": "#2f3038",
+                        "tertiary-container": "#e2e2e2",
+                        "secondary": "#c6c5cf",
+                        "outline": "#8e9192",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-primary-fixed": "#1a1c1c",
+                        "surface-bright": "#3a3939",
+                        "error-container": "#93000a",
+                        "on-background": "#e5e2e1",
+                        "on-secondary-fixed": "#1a1b22",
+                        "tertiary": "#ffffff",
+                        "on-surface": "#e5e2e1",
+                        "on-primary": "#2f3131",
+                        "surface-variant": "#353434"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "layout-margin": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "code": ["Space Mono", "monospace"],
+                        "h1": ["Inter", "sans-serif"],
+                        "content-odia": ["sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "h2": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "content-odia": ["16px", {"lineHeight": "1.8", "fontWeight": "400"}],
+                        "body": ["14px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col items-center justify-center p-layout-margin selection:bg-primary-fixed selection:text-on-primary-fixed">
+<div class="w-full max-w-lg">
+<!-- Header -->
+<header class="mb-xl text-center">
+<h1 class="font-h1 text-h1 text-primary mb-sm">OdiaTTS Research</h1>
+<p class="font-body text-body text-on-surface-variant max-w-sm mx-auto">
+                Contribute your voice to help us build comprehensive open-source datasets for Odia dialect synthesis.
+            </p>
+</header>
+<!-- Form Card -->
+<main class="bg-surface-container rounded-xl border border-white/10 p-lg md:p-xl">
+<form action="#" class="space-y-lg" method="POST">
+<!-- Full Name -->
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="fullName">Full Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline" id="fullName" name="fullName" placeholder="John Doe" required="" type="text"/>
+</div>
+<!-- Age & Gender Row -->
+<div class="grid grid-cols-2 gap-gutter">
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="ageGroup">Age Group</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" id="ageGroup" name="ageGroup" required="">
+<option disabled="" selected="" value="">Select</option>
+<option value="18-24">18-24</option>
+<option value="25-34">25-34</option>
+<option value="35-44">35-44</option>
+<option value="45-54">45-54</option>
+<option value="55+">55+</option>
+</select>
+</div>
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="gender">Gender</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" id="gender" name="gender" required="">
+<option disabled="" selected="" value="">Select</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+<option value="Other">Other</option>
+<option value="Prefer not to say">Prefer not to say</option>
+</select>
+</div>
+</div>
+<!-- Location Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="district">District</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" id="district" name="district" required="">
+<option disabled="" selected="" value="">Select District</option>
+<option value="Khordha">Khordha</option>
+<option value="Cuttack">Cuttack</option>
+<option value="Ganjam">Ganjam</option>
+<option value="Puri">Puri</option>
+<option value="Sambalpur">Sambalpur</option>
+</select>
+</div>
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="subArea">Sub-Area/Block/Village</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline" id="subArea" name="subArea" placeholder="e.g., Bhubaneswar" required="" type="text"/>
+</div>
+</div>
+<!-- Target Dialect -->
+<div>
+<label class="block font-label text-label text-on-surface mb-xs uppercase tracking-wider" for="dialect">Target Dialect</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-code text-code text-on-surface focus:outline-none focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] transition-colors appearance-none" id="dialect" name="dialect" required="">
+<option disabled="" selected="" value="">Select primary spoken dialect</option>
+<option value="Standard Odia">Standard Odia (Mughalbandi)</option>
+<option value="Sambalpuri">Sambalpuri (Western)</option>
+<option value="Ganjami">Ganjami (Southern)</option>
+<option value="Baleswari">Baleswari (Northern)</option>
+<option value="Desiya">Desiya (Koraputia)</option>
+</select>
+<p class="font-body text-[11px] text-on-surface-variant mt-xs">Select the dialect you use most naturally in daily conversation.</p>
+</div>
+<!-- CTA -->
+<div class="pt-sm">
+<button class="w-full bg-primary text-on-primary font-label text-label uppercase tracking-widest py-md rounded-md hover:bg-primary-fixed transition-colors flex items-center justify-center gap-sm group" type="submit">
+<span>Start Recording Session</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</main>
+<!-- Footer -->
+<footer class="mt-lg flex items-center justify-center gap-xs text-on-surface-variant opacity-80">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+<span class="font-code text-[11px]">All data is encrypted and strictly used for academic research.</span>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dialect Contributor Portal - OdiaTTS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Odia+Unicode:wght@400&amp;family=Space+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#636565",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-dim": "#141313",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#46464e",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#141313",
+                        "inverse-primary": "#5d5f5f",
+                        "on-secondary-container": "#bcbbc5",
+                        "surface-tint": "#c6c6c7",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "outline-variant": "#444748",
+                        "primary-container": "#e2e2e2",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-high": "#2a2a2a",
+                        "secondary-fixed-dim": "#c6c5cf",
+                        "on-tertiary": "#2f3131",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#c4c7c8",
+                        "inverse-on-surface": "#313030",
+                        "surface-container-highest": "#353434",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-tertiary-container": "#636565",
+                        "secondary-container": "#4a4b53",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed-variant": "#454747",
+                        "primary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "background": "#141313",
+                        "secondary-fixed": "#e3e1ec",
+                        "on-secondary": "#2f3038",
+                        "tertiary-container": "#e2e2e2",
+                        "secondary": "#c6c5cf",
+                        "outline": "#8e9192",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-primary-fixed": "#1a1c1c",
+                        "surface-bright": "#3a3939",
+                        "error-container": "#93000a",
+                        "on-background": "#e5e2e1",
+                        "on-secondary-fixed": "#1a1b22",
+                        "tertiary": "#ffffff",
+                        "on-surface": "#e5e2e1",
+                        "on-primary": "#2f3131",
+                        "surface-variant": "#353434"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "layout-margin": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "code": ["Space Mono", "monospace"],
+                        "h1": ["Inter", "sans-serif"],
+                        "content-odia": ["Odia Unicode", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "h2": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "content-odia": ["32px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body": ["14px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="bg-[#09090b] text-white font-inter tracking-tight fixed top-0 w-full z-50 border-b border-white/10 flex justify-between items-center px-6 h-14 w-full duration-200 ease-in-out">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-zinc-500" data-icon="terminal">terminal</span>
+<div class="flex items-center gap-3">
+<span class="text-lg font-bold tracking-widest text-white">ODIA.AI</span>
+<span class="text-zinc-500 text-sm">/</span>
+<span class="font-code text-zinc-300">OdiaTTS Collection</span>
+<div class="bg-zinc-800 text-white/70 px-2 py-1 rounded text-[10px] font-code uppercase border border-white/10 ml-2">Sambalpuri Dialect</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-zinc-400 font-code text-sm">
+<span>Progress:</span>
+<span class="text-white">4 / 32</span>
+</div>
+<div class="h-6 w-px bg-white/10"></div>
+<span class="material-symbols-outlined text-zinc-500 hover:text-white transition-colors cursor-pointer" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 pt-14 h-screen overflow-hidden">
+<!-- NavigationDrawer -->
+<nav class="hidden md:flex flex-col h-full sticky top-0 bg-[#09090b] text-white font-mono text-xs uppercase h-full w-64 border-r border-r border-white/10 transition-all">
+<div class="p-6 border-b border-white/10">
+<h2 class="text-white font-black text-sm tracking-wider">DEVELOPER_CONSOLE</h2>
+</div>
+<div class="flex flex-col py-4 gap-1 px-3 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:bg-zinc-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="record_voice_over">record_voice_over</span>
+<span>Synthesis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:bg-zinc-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings_voice">settings_voice</span>
+<span>Transcription</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded bg-zinc-800 text-white border border-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="spatial_audio_off" style="font-variation-settings: 'FILL' 1;">spatial_audio_off</span>
+<span>Dialect Portal</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:bg-zinc-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="menu_book">menu_book</span>
+<span>Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto bg-surface-container-lowest relative flex items-center justify-center p-6 md:p-12">
+<div class="w-full max-w-3xl flex flex-col gap-xl">
+<!-- Step 1: Reference -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-2 text-zinc-500 font-label uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm" data-icon="library_books">library_books</span>
+<span>Standard Reference</span>
+</div>
+<div class="p-8 border border-white/10 rounded-xl bg-surface-container-low flex flex-col gap-4">
+<p class="font-content-odia text-white text-opacity-90 text-3xl">ଆଜି ଆକାଶ ମେଘୁଆ ଅଛି</p>
+<p class="font-body text-zinc-400 text-lg">"The sky is cloudy today."</p>
+</div>
+</div>
+<!-- Step 2: Input -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-2 text-primary font-label uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm" data-icon="translate">translate</span>
+<span>How do you say this naturally in your dialect?</span>
+</div>
+<div class="relative">
+<textarea class="w-full bg-surface-container-low border border-white/10 rounded-xl p-8 font-content-odia text-3xl text-white placeholder-zinc-700 focus:outline-none focus:border-white focus:ring-0 resize-none min-h-[160px]" placeholder="ଟାଇପ୍ କରନ୍ତୁ..."></textarea>
+<div class="absolute bottom-4 right-4 text-zinc-600 font-code text-xs">
+                            Odia Keyboard Active
+                        </div>
+</div>
+</div>
+<!-- Step 3: Recording Actions (Post-Recording State) -->
+<div class="flex flex-col items-center justify-center pt-8 border-t border-white/10 gap-8 mt-4">
+<!-- Waveform Visualization Mockup -->
+<div class="w-full h-16 flex items-center justify-center gap-1 opacity-50">
+<div class="w-1 h-4 bg-zinc-600 rounded-full"></div>
+<div class="w-1 h-8 bg-zinc-500 rounded-full"></div>
+<div class="w-1 h-12 bg-white rounded-full"></div>
+<div class="w-1 h-6 bg-zinc-500 rounded-full"></div>
+<div class="w-1 h-3 bg-zinc-600 rounded-full"></div>
+<div class="w-1 h-10 bg-white rounded-full"></div>
+<div class="w-1 h-14 bg-white rounded-full"></div>
+<div class="w-1 h-8 bg-zinc-500 rounded-full"></div>
+<div class="w-1 h-5 bg-zinc-600 rounded-full"></div>
+<div class="w-1 h-2 bg-zinc-700 rounded-full"></div>
+</div>
+<div class="flex items-center gap-6">
+<button class="px-6 py-3 border border-white/10 rounded-lg text-zinc-300 font-label uppercase hover:text-white hover:border-white/30 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="replay">replay</span>
+                            Retake Audio
+                        </button>
+<button class="px-8 py-3 bg-white text-black rounded-lg font-label uppercase hover:bg-zinc-200 transition-colors flex items-center gap-2">
+<span>Save &amp; Next Sentence</span>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-16 flex justify-around items-center px-4 bg-[#09090b] text-white font-inter text-[10px] border-t border-white/10 z-50">
+<a class="flex flex-col items-center justify-center text-zinc-500 active:scale-95 transition-transform hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined text-xl mb-1" data-icon="home">home</span>
+<span>Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 active:scale-95 transition-transform hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined text-xl mb-1" data-icon="mic">mic</span>
+<span>Record</span>
+</a>
+<a class="flex flex-col items-center justify-center text-white bg-zinc-800 rounded-lg mx-2 my-1 w-16 h-12 active:scale-95 transition-transform hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined text-xl mb-1" data-icon="code" style="font-variation-settings: 'FILL' 1;">code</span>
+<span>Dialect</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 active:scale-95 transition-transform hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined text-xl mb-1" data-icon="person">person</span>
+<span>Profile</span>
+</a>
+</nav>
+</body></html>
