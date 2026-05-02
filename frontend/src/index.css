@@ -23,7 +23,7 @@
     background-image: url('/assets/odia_pattern.png');
     background-repeat: repeat;
     background-size: 500px;
-    opacity: 0.06;
+    opacity: 0.01;
     z-index: 9999;
     pointer-events: none;
   }
