@@ -52,6 +52,9 @@ const Collect: React.FC = () => {
   const chunksRef = useRef<Blob[]>([]);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [contributionStats, setContributionStats] = useState({ totalVoices: 0, contributorRank: 0 });
 
@@ -101,6 +104,25 @@ const Collect: React.FC = () => {
     }
   };
 
+  const handlePlayRecording = () => {
+    if (audioBlob) {
+      if (isPlaying) {
+        audioPlayerRef.current?.pause();
+        setIsPlaying(false);
+      } else {
+        const url = URL.createObjectURL(audioBlob);
+        if (!audioPlayerRef.current) {
+          audioPlayerRef.current = new Audio(url);
+        } else {
+          audioPlayerRef.current.src = url;
+        }
+        audioPlayerRef.current.onended = () => setIsPlaying(false);
+        audioPlayerRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
   const blobToBase64 = (blob: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -123,6 +145,16 @@ const Collect: React.FC = () => {
     }
 
     setIsSubmitting(true);
+    setUploadProgress(0);
+    
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + 5;
+      });
+    }, 100);
+
     try {
       const base64Audio = await blobToBase64(audioBlob);
 
@@ -139,11 +171,17 @@ const Collect: React.FC = () => {
 
       if (API_URL === 'YOUR_GAS_ENDPOINT_URL_HERE') {
           console.log("Mock Payload (API not set):", payload);
-          setContributionStats({ 
-            totalVoices: 0, 
-            contributorRank: 0 
-          });
-          setShowSuccess(true);
+          // Complete progress
+          clearInterval(progressInterval);
+          setUploadProgress(100);
+          
+          setTimeout(() => {
+            setContributionStats({ 
+              totalVoices: 0, 
+              contributorRank: 0 
+            });
+            setShowSuccess(true);
+          }, 500);
       } else {
           const response = await fetch(API_URL, {
             method: 'POST',
@@ -153,16 +191,22 @@ const Collect: React.FC = () => {
           const result = await response.json();
           console.log("Submitted to GAS", result);
           
+          clearInterval(progressInterval);
+          setUploadProgress(100);
+
           if (result.stats) {
             setContributionStats({
               totalVoices: result.stats.totalVoices,
               contributorRank: result.stats.contributorRank
             });
           }
-          setShowSuccess(true);
+          setTimeout(() => {
+            setShowSuccess(true);
+          }, 500);
       }
       
     } catch (err) {
+      clearInterval(progressInterval);
       console.error('Error submitting data:', err);
       alert('Failed to save data. See console for details.');
     } finally {
@@ -243,7 +287,7 @@ const Collect: React.FC = () => {
               <div className="relative">
                 <textarea
                   className="w-full bg-[#1c1b1b] border border-white/10 rounded-xl p-5 md:p-8 font-sans text-lg md:text-2xl text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 resize-none min-h-[140px]"
-                  placeholder="Type the regional dialect here using English script..."
+                  placeholder="Type the regional dialect here using English script or copy the text if its same and paste here.. "
                   value={translatedText}
                   onChange={(e) => setTranslatedText(e.target.value)}
                 />
@@ -291,15 +335,43 @@ const Collect: React.FC = () => {
                   </button>
                 )}
 
-                <div className="flex items-center gap-2 w-full md:w-auto">
+                {audioBlob && !isRecording && (
                   <button 
-                    onClick={handleSave}
-                    disabled={!audioBlob || !translatedText || isSubmitting}
-                    className={`flex-1 md:flex-none px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
+                    onClick={handlePlayRecording}
+                    className={`w-full md:w-auto px-6 py-3 border border-white/10 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${isPlaying ? 'bg-white text-black' : 'bg-transparent text-white hover:bg-white/5'}`}
                   >
-                    <span>{isSubmitting ? 'Saving...' : 'Save'}</span>
-                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                    <span className="material-symbols-outlined text-sm">{isPlaying ? 'stop' : 'hearing'}</span>
+                    <span>{isPlaying ? 'Playing...' : 'Hear Record'}</span>
                   </button>
+                )}
+
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <div className="flex flex-col gap-1.5 flex-1 md:flex-none">
+                    <button 
+                      onClick={handleSave}
+                      disabled={!audioBlob || !translatedText || isSubmitting}
+                      className={`relative overflow-hidden w-full md:w-auto px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-all ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
+                    >
+                      <span className="relative z-20">{isSubmitting ? 'Saving...' : 'Save'}</span>
+                      <span className="material-symbols-outlined text-sm relative z-20">check_circle</span>
+                      
+                      {isSubmitting && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono opacity-30 z-20">
+                          {uploadProgress}%
+                        </span>
+                      )}
+                    </button>
+                    
+                    {/* Progress Bar (Only under Save button) */}
+                    {isSubmitting && (
+                      <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-white transition-all duration-300 ease-out"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
                   
                   <button 
                     onClick={() => {

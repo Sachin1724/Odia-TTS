@@ -186,6 +186,7 @@ const Onboarding: React.FC = () => {
                 <option value="Sundargarhi">Sundargarhi</option>
                 <option value="Bhatri">Bhatri</option>
                 <option value="Halbi">Halbi</option>
+                <option value="Anugulia">Anugulia (Anugul)</option>
               </select>
               <p className="text-[11px] text-zinc-500 mt-1">Select the dialect you use most naturally in daily conversation.</p>
             </div>
