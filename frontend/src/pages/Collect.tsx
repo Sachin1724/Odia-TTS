@@ -44,6 +44,7 @@ const Collect: React.FC = () => {
   const navigate = useNavigate();
   const [metadata, setMetadata] = useState<any>(null);
   const [translatedText, setTranslatedText] = useState('');
+  const [shuffledTextData, setShuffledTextData] = useState(TEXT_DATA);
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const [isRecording, setIsRecording] = useState(false);
@@ -59,6 +60,10 @@ const Collect: React.FC = () => {
   const [contributionStats, setContributionStats] = useState({ totalVoices: 0, contributorRank: 0 });
 
   useEffect(() => {
+    // Shuffle TEXT_DATA on mount
+    const shuffled = [...TEXT_DATA].sort(() => Math.random() - 0.5);
+    setShuffledTextData(shuffled);
+
     const savedMetadata = localStorage.getItem('odiaTtsMetadata');
     if (savedMetadata) {
       setMetadata(JSON.parse(savedMetadata));
@@ -159,7 +164,7 @@ const Collect: React.FC = () => {
     try {
       const base64Audio = await blobToBase64(audioBlob);
 
-      const currentSentence = TEXT_DATA[currentIndex];
+      const currentSentence = shuffledTextData[currentIndex];
       const payload = {
         metadata: metadata,
         text: {
@@ -220,7 +225,7 @@ const Collect: React.FC = () => {
     // Reset for next sentence
     setTranslatedText('');
     setAudioBlob(null);
-    if (currentIndex < TEXT_DATA.length - 1) {
+    if (currentIndex < shuffledTextData.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       navigate('/workspace/analytics');
@@ -264,17 +269,17 @@ const Collect: React.FC = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-zinc-500 text-[10px] md:text-xs font-medium uppercase tracking-widest">
                 <span className="material-symbols-outlined text-sm">library_books</span>
-                <span>Standard Reference ({currentIndex + 1}/{TEXT_DATA.length})</span>
+                <span>Standard Reference ({currentIndex + 1}/{shuffledTextData.length})</span>
               </div>
               <div className="p-5 md:p-8 border border-white/10 rounded-xl bg-[#1c1b1b] flex flex-col gap-4">
                 <div className="flex justify-between items-start gap-4">
-                  <p className="font-sans text-white text-opacity-90 text-xl md:text-3xl leading-relaxed">{TEXT_DATA[currentIndex].t}</p>
-                  <span className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded whitespace-nowrap">{TEXT_DATA[currentIndex].c}</span>
+                  <p className="font-sans text-white text-opacity-90 text-xl md:text-3xl leading-relaxed">{shuffledTextData[currentIndex].t}</p>
+                  <span className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded whitespace-nowrap">{shuffledTextData[currentIndex].c}</span>
                 </div>
-                <p className="text-zinc-400 text-sm md:text-lg italic">"{TEXT_DATA[currentIndex].r}"</p>
+                <p className="text-zinc-400 text-sm md:text-lg italic">"{shuffledTextData[currentIndex].r}"</p>
                 <div className="flex items-center gap-2 mt-2 p-3 bg-zinc-800/50 rounded-lg border border-zinc-700/50">
                   <span className="material-symbols-outlined text-zinc-400 text-sm">lightbulb</span>
-                  <p className="text-zinc-300 text-xs md:text-sm italic">{TEXT_DATA[currentIndex].tip}</p>
+                  <p className="text-zinc-300 text-xs md:text-sm italic">{shuffledTextData[currentIndex].tip}</p>
                 </div>
               </div>
             </div>
@@ -378,10 +383,10 @@ const Collect: React.FC = () => {
                     onClick={() => {
                       setTranslatedText('');
                       setAudioBlob(null);
-                      setCurrentIndex(Math.min(TEXT_DATA.length - 1, currentIndex + 1));
+                      setCurrentIndex(Math.min(shuffledTextData.length - 1, currentIndex + 1));
                     }}
-                    disabled={currentIndex === TEXT_DATA.length - 1 || isSubmitting}
-                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === TEXT_DATA.length - 1 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
+                    disabled={currentIndex === shuffledTextData.length - 1 || isSubmitting}
+                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === shuffledTextData.length - 1 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
                     title="Skip to next sentence"
                   >
                     <span>Next</span>
