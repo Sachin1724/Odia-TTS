@@ -150,8 +150,9 @@ const Collect: React.FC = () => {
     // Simulate progress
     const progressInterval = setInterval(() => {
       setUploadProgress(prev => {
-        if (prev >= 90) return prev;
-        return prev + 5;
+        if (prev < 90) return prev + 5;
+        if (prev < 98) return prev + 0.5; // Slow down but keep moving
+        return prev;
       });
     }, 100);
 
