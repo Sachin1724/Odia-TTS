@@ -181,6 +181,7 @@ const Onboarding: React.FC = () => {
                 <option value="Ganjami">Ganjami (Southern)</option>
                 <option value="Baleswari">Baleswari (Northern)</option>
                 <option value="Desiya">Desiya (Koraputia)</option>
+                <option value="Koraputia">Koraputia (Koraput)</option>
                 <option value="Phulbani">Phulbani Odia</option>
                 <option value="Kalahandia">Kalahandia</option>
                 <option value="Sundargarhi">Sundargarhi</option>
