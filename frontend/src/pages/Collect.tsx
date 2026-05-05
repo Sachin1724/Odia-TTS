@@ -406,6 +406,7 @@ const Collect: React.FC = () => {
         onRecordAnother={handleSuccessClose}
         contributorCount={contributionStats.contributorRank}
         totalVoices={contributionStats.totalVoices}
+        contributorName={metadata?.name || ''}
       />
     </div>
   );

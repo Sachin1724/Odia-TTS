@@ -99,7 +99,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
 
     // Composite the card onto a canvas with the site's gradient background
     const img = await createImageBitmap(cardBlob);
-    const padding = 56;
+    const padding = 60;
     const totalW = img.width + padding * 2;
     const totalH = img.height + padding * 2;
 
@@ -108,30 +108,42 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     canvas.height = totalH;
     const ctx = canvas.getContext('2d')!;
 
-    // — Base dark background (zinc-900) —
+    // — Base dark background (#18181b = zinc-900) —
     ctx.fillStyle = '#18181b';
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Red glow: top-left —
+    // — Red glow: top-left (stronger, larger radius) —
     const redGlow = ctx.createRadialGradient(
-      totalW * 0.12, totalH * 0.08, 0,
-      totalW * 0.12, totalH * 0.08, totalW * 0.65,
+      totalW * 0.08, totalH * 0.05, 0,
+      totalW * 0.08, totalH * 0.05, totalW * 0.80,
     );
-    redGlow.addColorStop(0, 'rgba(220, 38, 38, 0.45)');
-    redGlow.addColorStop(0.5, 'rgba(220, 38, 38, 0.15)');
-    redGlow.addColorStop(1, 'rgba(220, 38, 38, 0)');
+    redGlow.addColorStop(0,   'rgba(200, 20, 20, 0.70)');
+    redGlow.addColorStop(0.3, 'rgba(200, 20, 20, 0.30)');
+    redGlow.addColorStop(0.6, 'rgba(200, 20, 20, 0.08)');
+    redGlow.addColorStop(1,   'rgba(200, 20, 20, 0)');
     ctx.fillStyle = redGlow;
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Orange glow: bottom-right —
+    // — Orange glow: bottom-right (stronger, larger radius) —
     const orangeGlow = ctx.createRadialGradient(
-      totalW * 0.88, totalH * 0.92, 0,
-      totalW * 0.88, totalH * 0.92, totalW * 0.65,
+      totalW * 0.92, totalH * 0.95, 0,
+      totalW * 0.92, totalH * 0.95, totalW * 0.80,
     );
-    orangeGlow.addColorStop(0, 'rgba(234, 88, 12, 0.40)');
-    orangeGlow.addColorStop(0.5, 'rgba(234, 88, 12, 0.12)');
-    orangeGlow.addColorStop(1, 'rgba(234, 88, 12, 0)');
+    orangeGlow.addColorStop(0,   'rgba(220, 80, 0, 0.65)');
+    orangeGlow.addColorStop(0.3, 'rgba(220, 80, 0, 0.28)');
+    orangeGlow.addColorStop(0.6, 'rgba(220, 80, 0, 0.07)');
+    orangeGlow.addColorStop(1,   'rgba(220, 80, 0, 0)');
     ctx.fillStyle = orangeGlow;
+    ctx.fillRect(0, 0, totalW, totalH);
+
+    // — Subtle dark vignette overlay around the edges for depth —
+    const vignette = ctx.createRadialGradient(
+      totalW / 2, totalH / 2, totalW * 0.3,
+      totalW / 2, totalH / 2, totalW * 0.85,
+    );
+    vignette.addColorStop(0, 'rgba(0,0,0,0)');
+    vignette.addColorStop(1, 'rgba(0,0,0,0.45)');
+    ctx.fillStyle = vignette;
     ctx.fillRect(0, 0, totalW, totalH);
 
     // — Draw the captured card on top with padding —
