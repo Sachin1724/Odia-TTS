@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, PlusCircle, Users, Heart, Loader2 } from 'lucide-react';
+import { Share2, PlusCircle, Users, Heart, Loader2, Download } from 'lucide-react';
 import { toBlob } from 'html-to-image';
 
 interface SuccessPopupProps {
@@ -23,6 +23,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   const [showContent, setShowContent] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const [isSharing, setIsSharing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleShare = async () => {
     if (!popupRef.current || isSharing) return;
@@ -30,17 +31,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     setIsSharing(true);
 
     try {
-      // html-to-image supports modern CSS color spaces (oklab, oklch) unlike html2canvas
-      const blob = await toBlob(popupRef.current, {
-        pixelRatio: 2,
-        backgroundColor: '#18181b', // matches zinc-900
-        filter: (node) => {
-          // Exclude elements marked to be ignored in the screenshot
-          return !node.dataset?.html2canvasIgnore && node.getAttribute?.('data-html2canvas-ignore') !== 'true';
-        },
-      });
-
-      if (!blob) throw new Error('Failed to generate image blob');
+      const blob = await captureBlob();
 
       const file = new File([blob], 'odia-tts-contribution.png', { type: 'image/png' });
 
@@ -53,8 +44,8 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
       if (canShareFiles) {
         try {
           await navigator.share({
-            title: 'Odia-TTS Contribution',
-            text: "I just contributed my voice to Odisha's digital future! Join me at Odia-TTS.",
+            title: 'I contributed my voice to Odia TTS!',
+            text: `I just contributed my voice to help build Odisha's first open-source Text-to-Speech dataset! 🎙️\n\nJoin me & make your voice count → https://odia-tts-tan.vercel.app/`,
             files: [file],
           });
         } catch (error) {
@@ -83,6 +74,32 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const captureBlob = async (): Promise<Blob> => {
+    if (!popupRef.current) throw new Error('Popup ref not ready');
+    const blob = await toBlob(popupRef.current, {
+      pixelRatio: 2,
+      backgroundColor: '#18181b',
+      filter: (node) => {
+        return node.getAttribute?.('data-html2canvas-ignore') !== 'true';
+      },
+    });
+    if (!blob) throw new Error('Failed to generate image blob');
+    return blob;
+  };
+
+  const handleDownload = async () => {
+    if (!popupRef.current || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const blob = await captureBlob();
+      downloadFile(blob);
+    } catch (error) {
+      console.error('Error downloading screenshot:', error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   useEffect(() => {
@@ -214,7 +231,20 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                   </div>
                 </motion.div>
 
-                {/* CTAs */}
+                {/* Screenshot branding footer — visible in captured image only */}
+                <div className="mt-2 mb-6 flex flex-col items-center gap-1 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
+                  <p className="text-[11px] font-semibold tracking-widest uppercase text-zinc-500">
+                    Contributed via
+                  </p>
+                  <p className="text-sm font-bold text-white/80 tracking-tight">
+                    BHASA<span className="text-red-500">.</span>ODIA
+                  </p>
+                  <p className="text-[10px] text-zinc-600 mt-0.5">
+                    odia-tts-tan.vercel.app
+                  </p>
+                </div>
+
+                {/* CTAs — excluded from screenshot */}
                 <div className="flex flex-col gap-3" data-html2canvas-ignore="true">
                   <button
                     onClick={onRecordAnother}
@@ -223,14 +253,25 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                     <PlusCircle size={18} />
                     Record Another Dialect
                   </button>
-                  <button
-                    onClick={handleShare}
-                    disabled={isSharing}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSharing ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}
-                    {isSharing ? 'Sharing...' : 'Share with a friend'}
-                  </button>
+                  {/* Share + Download side by side */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={handleShare}
+                      disabled={isSharing || isDownloading}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSharing ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}
+                      {isSharing ? 'Sharing…' : 'Share'}
+                    </button>
+                    <button
+                      onClick={handleDownload}
+                      disabled={isDownloading || isSharing}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                      {isDownloading ? 'Saving…' : 'Download'}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>
