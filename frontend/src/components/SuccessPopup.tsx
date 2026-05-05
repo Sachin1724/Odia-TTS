@@ -18,6 +18,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   totalVoices = 1245
 }) => {
   const [showContent, setShowContent] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -137,9 +138,9 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                     <div className="flex flex-col items-center">
                       <div className="flex items-center gap-1 text-orange-400 mb-1">
                         <Heart size={14} className="animate-pulse" />
-                        <span className="text-[10px] uppercase tracking-wider font-bold">Voices</span>
+                        <span className="text-[10px] uppercase tracking-wider font-bold">Your Voices</span>
                       </div>
-                      <span className="text-xl font-mono text-white">{totalVoices.toLocaleString()}</span>
+                      <span className="text-xl font-mono text-white">{totalVoices.toLocaleString()} / 52</span>
                     </div>
                   </div>
                 </motion.div>
@@ -154,19 +155,33 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                     Record Another Dialect
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
+                       const shareText = `I just contributed ${totalVoices} voices to Odisha's digital future! Join me at Odia-TTS.`;
+                       const shareUrl = window.location.origin;
+                       
                        if (navigator.share) {
-                         navigator.share({
-                           title: 'Odia-TTS Contribution',
-                           text: 'I just contributed my voice to Odisha\'s digital future! Join me at Odia-TTS.',
-                           url: window.location.origin
-                         });
+                         try {
+                           await navigator.share({
+                             title: 'Odia-TTS Contribution',
+                             text: shareText,
+                             url: shareUrl
+                           });
+                         } catch (err) {
+                           // If user cancels or fails, fallback
+                           navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                           setShowToast(true);
+                           setTimeout(() => setShowToast(false), 3000);
+                         }
+                       } else {
+                         navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                         setShowToast(true);
+                         setTimeout(() => setShowToast(false), 3000);
                        }
                     }}
                     className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95"
                   >
                     <Share2 size={18} />
-                    Share with a friend
+                    {showToast ? 'Link Copied!' : 'Share with a friend'}
                   </button>
                 </div>
               </motion.div>

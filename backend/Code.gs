@@ -15,7 +15,7 @@ function setupEnvironment() {
   if (files.hasNext()) {
     csvFile = files.next();
   } else {
-    csvFile = folder.createFile(CSV_FILE_NAME, 'timestamp,speaker_id,name,age,gender,district,dialect,standard_text,translated_text,audio_filename\n', MimeType.CSV);
+    csvFile = folder.createFile(CSV_FILE_NAME, 'timestamp,speaker_id,name,age,gender,district,dialect,standard_text,translated_text,emotion_tag,audio_filename\n', MimeType.CSV);
   }
   
   return { folder, csvFile };
@@ -48,6 +48,7 @@ function doPost(e) {
       `"${data.metadata.dialect}"`,
       `"${data.text.standard}"`,
       `"${data.text.translated}"`,
+      `"${data.text.emotion_tag || ''}"`,
       audioFilename
     ].join(',') + '\n';
     
@@ -88,18 +89,49 @@ function doGet(e) {
     const csvContent = csvFile.getBlob().getDataAsString();
     const lines = csvContent.split('\n').filter(line => line.trim() !== '');
     
-    const totalVoices = lines.length - 1;
-    const speakerIds = lines.slice(1).map(line => line.split(',')[1]);
-    const uniqueSpeakers = [...new Set(speakerIds)].length;
+    const totalVoices = lines.length > 1 ? lines.length - 1 : 0;
+    
+    // Parse lines to calculate stats and leaderboard
+    let speakerIds = new Set();
+    let districts = new Set();
+    let contributorMap = {};
+
+    for (let i = 1; i < lines.length; i++) {
+      // Basic CSV split, assuming no commas inside the quotes for names/districts for simplicity here
+      // Real robust CSV parser can be complex, but for GAS this works if inputs are clean
+      const parts = lines[i].split('","'); // We know we quote name, district etc.
+      
+      // Let's use a simple split since we only need Name and District which are fixed indices.
+      // 0: timestamp, 1: speaker_id, 2: "name", 3: age, 4: gender, 5: "district"
+      // More robust split:
+      const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      if(row.length < 6) continue;
+      
+      const speakerId = row[1];
+      let name = row[2] ? row[2].replace(/^"|"$/g, '') : "Anonymous";
+      let district = row[5] ? row[5].replace(/^"|"$/g, '') : "Unknown";
+      
+      speakerIds.add(speakerId);
+      districts.add(district);
+      
+      if (!contributorMap[name]) {
+        contributorMap[name] = { name: name, voices: 0, district: district };
+      }
+      contributorMap[name].voices += 1;
+    }
+    
+    // Convert to array and sort by voices descending
+    let leaderboard = Object.values(contributorMap).sort((a, b) => b.voices - a.voices);
     
     // Estimate hours (assuming ~3 seconds per recording)
     const estimatedHours = ((totalVoices * 3) / 3600).toFixed(1);
 
     const stats = {
       totalVoices: totalVoices,
-      activeSpeakers: uniqueSpeakers,
+      activeSpeakers: speakerIds.size,
       hoursCollected: parseFloat(estimatedHours),
-      districts: [...new Set(lines.slice(1).map(line => line.split(',')[5]))].length
+      districts: districts.size,
+      leaderboard: leaderboard
     };
 
     return ContentService.createTextOutput(JSON.stringify({ 

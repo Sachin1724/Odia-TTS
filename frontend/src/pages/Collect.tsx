@@ -5,6 +5,14 @@ import BackgroundOverlay from '../components/BackgroundOverlay';
 
 const API_URL = import.meta.env.VITE_GAS_API_URL || 'YOUR_GAS_ENDPOINT_URL_HERE';
 
+const MOTIVATIONAL_STATEMENTS = [
+  "ଆପଣଙ୍କ ସ୍ୱର ଓଡ଼ିଶାର ଭବିଷ୍ୟତ । (Your voice is Odisha's future.)",
+  "ଛୋଟ କଣ୍ଠ… ବଡ଼ ପ୍ରଭାବ । (Small voice... big impact.)",
+  "ଆମ ମାତୃଭାଷା, ଆମ ଗର୍ବ । (Our mother tongue, our pride.)",
+  "ଆପଣଙ୍କ ଅବଦାନ ଅମୂଲ୍ୟ । (Your contribution is invaluable.)",
+  "ଓଡ଼ିଆ ଭାଷାକୁ ଡିଜିଟାଲ୍ ରୂପ ଦେବାରେ ସାହାଯ୍ୟ କରନ୍ତୁ । (Help digitalize Odia language.)"
+];
+
 const TEXT_DATA = [
   {t:"ଓଡ଼ିଆ ଭାଷା ଆମ ମାତୃଭାଷା ଏବଂ ଆମ ଗର୍ବ।",r:"Odia bhaasha aama maatru-bhaasha ebang aama garba.",c:"Daily speech",tip:"Speak naturally with pride."},
   {t:"ଆଜି ଆକାଶ ବହୁତ ସୁନ୍ଦର ଦେଖାଯାଉଛି।",r:"Aaji aakaash bahuta sundara dekhaayaauchi.",c:"Daily speech",tip:"Casual, conversational observation."},
@@ -37,7 +45,37 @@ const TEXT_DATA = [
   {t:"ଆଜ୍ଞା, ଆପଣ କ'ଣ ଖୋଜୁଛନ୍ତି?",r:"Aagjaa, aapana ka'na khojuchhanti?",c:"Formal speech",tip:"Respectful, formal register."},
   {t:"ଧନ୍ୟବାଦ, ଆପଣଙ୍କ ସହଯୋଗ ଅମୂଲ୍ୟ।",r:"Dhanyabaada, aapananka sahaayoga amoolya.",c:"Formal speech",tip:"Formal gratitude, measured pace."},
   {t:"ଆମ ବିଶ୍ୱବିଦ୍ୟାଳୟ ଦ୍ୱାରା ଏହି ପ୍ରକଳ୍ପ ଚଳାଯାଉଛି।",r:"Aama bishwabidyaalaya dwaara ehi prakalpaa chalayauchi.",c:"Formal speech",tip:"Institutional, clear enunciation."},
-  {t:"ଓଡ଼ିଶା ସରକାର ଏହି ଯୋଜନା ଆରମ୍ଭ କଲେ।",r:"Odisha sarakaar ehi yojanaa aarambha kale.",c:"Formal speech",tip:"News announcement style."}
+  {t:"ଓଡ଼ିଶା ସରକାର ଏହି ଯୋଜନା ଆରମ୍ଭ କଲେ।",r:"Odisha sarakaar ehi yojanaa aarambha kale.",c:"Formal speech",tip:"News announcement style."},
+  
+  // --- 1. Numbers, Dates & Currencies ---
+  {t:"ମୋ ଫୋନ୍ ନମ୍ବର ହେଉଛି ୯୮୭୬୫୪୩୨୧୦।", r:"Mo phone number heuchhi naba aatha saata chha paancha chaari tini dui eka sun.", c:"Numbers & Data", tip:"Read digits clearly, one by one."},
+  {t:"ଏହି ଜିନିଷର ଦାମ୍ ୪୫୦ ଟଙ୍କା।", r:"Ehi jinisara daam chaari saha pachaas tankaa.", c:"Numbers & Data", tip:"Natural commercial transaction tone."},
+  {t:"ମୋ ଜନ୍ମ ମସିହା ୨୦୦୫ ଅଟେ।", r:"Mo janma masihaa dui hazaar paancha ate.", c:"Numbers & Data", tip:"Read the year naturally."},
+  {t:"ଆଜି ୧୫ ଅଗଷ୍ଟ, ସ୍ୱାଧୀନତା ଦିବସ।", r:"Aaji pandara August, swadhinata dibasa.", c:"Numbers & Data", tip:"Clear, declarative tone."},
+
+  // --- 2. Technology & English Loanwords ---
+  {t:"ମୋବାଇଲ୍ ରେ ଇଣ୍ଟରନେଟ୍ ଚାଲୁନାହିଁ, ନେଟୱର୍କ ନାହିଁ।", r:"Mobile re internet chaalunaahin, network naahin.", c:"Technology", tip:"Natural frustration, clear English loanwords."},
+  {t:"ହ୍ଵାଟସ୍ ଆପ୍ ରେ ମେସେଜ୍ ଟେ ପଠାଇଦେବୁ।", r:"WhatsApp re message te pathaaidebu.", c:"Technology", tip:"Casual, fast-paced instruction."},
+  {t:"ଆପ୍ଲିକେସନ୍ ଡାଉନଲୋଡ୍ ହେବାକୁ ସମୟ ଲାଗୁଛି।", r:"Application download hebaaku samaya laaguchi.", c:"Technology", tip:"Neutral informative tone."},
+  {t:"ପାସୱାର୍ଡ ଭୁଲ୍ ଅଛି, ଆଉ ଥରେ ଚେଷ୍ଟା କରନ୍ତୁ।", r:"Password bhul achhi, aau thare chestaa karantu.", c:"Technology", tip:"System alert, robotic but polite."},
+
+  // --- 3. Emotions, Exclamations & Pitch Shifts ---
+  {t:"ଆରେ! ତୁ କେବେ ଆସିଲୁ? କହିଲୁ ନି ତ!", r:"Aare! Tu kebe aasilu? Kahilu ni ta!", c:"Emotions", tip:"High pitch, excited surprise."},
+  {t:"ନା, ମୁଁ ଏ କାମ କଦାପି କରିପାରିବି ନାହିଁ!", r:"Naa, mun e kaama kadaapi karipaaribi naahin!", c:"Emotions", tip:"Firm, angry, definitive."},
+  {t:"ଓଃ! ଆଜି କି ଭୟଙ୍କର ଗରମ।", r:"Oh! Aaji ki bhayankara garama.", c:"Emotions", tip:"Exhausted, sighing tone."},
+  {t:"ଦୟାକରି ମୋତେ ଟିକେ ସାହାଯ୍ୟ କରନ୍ତୁ!", r:"Dayaakari mote tike saahaajya karantu!", c:"Emotions", tip:"Pleading, desperate pitch."},
+
+  // --- 4. Complex Phonetics & Consonant Clusters ---
+  {t:"ଖଣ୍ଡଗିରିରେ ଖରାବେଳେ ଖଇ କୋଳି ଖାଇଲି।", r:"Khandagirire kharabele khai koli khaili.", c:"Phonetics", tip:"Emphasize the 'Kh' and 'L'/'L(hard)' sounds."},
+  {t:"ଚଷା ଚାଷ କରେ, ଋଷି ତପସ୍ୟା କରନ୍ତି।", r:"Chashaa chaasa kare, rushi tapasyaa karanti.", c:"Phonetics", tip:"Clear distinction between different 'S/Sh' sounds."},
+  {t:"ଡମ୍ବରୁ ବାଜିଲେ ବିପଦ ଦୂର ହୁଏ।", r:"Dambaru baajile bipada doora hue.", c:"Phonetics", tip:"Strong 'D' and 'R' sounds."},
+  {t:"ଜ୍ଞାନୀ ଲୋକମାନେ ବିଜ୍ଞାନ ଉପରେ ବିଶ୍ୱାସ କରନ୍ତି।", r:"Gyaani lokamaane bigyaana upare bishwaasa karanti.", c:"Phonetics", tip:"Heavy focus on the 'Gya' consonant clusters."},
+
+  // --- 5. Domain Specific (Healthcare & Governance) ---
+  {t:"ରୋଗୀଙ୍କୁ ତୁରନ୍ତ ଡାକ୍ତରଖାନା ନେଇଯାଆନ୍ତୁ।", r:"Rogiinku turanta daaktarakhaanaa neijaaantu.", c:"Healthcare", tip:"Urgent but clear command."},
+  {t:"ରକ୍ତଚାପ ବଢିଯାଇଛି, ବିଶ୍ରାମ ନିଅନ୍ତୁ।", r:"Raktachaapa badhijaichi, bishraama niantu.", c:"Healthcare", tip:"Calm, clinical, professional."},
+  {t:"ପଞ୍ଚାୟତ ଅଫିସ୍ ରେ ଆଧାର କାର୍ଡ ଲିଙ୍କ୍ କରନ୍ତୁ।", r:"Panchaayata office re Aadhaar card link karantu.", c:"Governance", tip:"Bureaucratic, instructional."},
+  {t:"ବିଦ୍ୟାଳୟରେ ମଧ୍ୟାହ୍ନ ଭୋଜନ ବ୍ୟବସ୍ଥା ଅଛି।", r:"Bidyaalayare madhyaahna bhojana byabasthaa achhi.", c:"Governance", tip:"Formal, informative announcement."}
 ];
 
 const Collect: React.FC = () => {
@@ -46,7 +84,9 @@ const Collect: React.FC = () => {
   const [translatedText, setTranslatedText] = useState('');
   const [shuffledTextData, setShuffledTextData] = useState(TEXT_DATA);
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+  const [emotionTag, setEmotionTag] = useState('[NEUTRAL]');
+  const [statementIndex, setStatementIndex] = useState(0);
+  const [showCompletionBadge, setShowCompletionBadge] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -71,6 +111,11 @@ const Collect: React.FC = () => {
       // If no metadata, redirect back to onboarding
       navigate('/onboarding');
     }
+
+    const interval = setInterval(() => {
+      setStatementIndex((prev) => (prev + 1) % MOTIVATIONAL_STATEMENTS.length);
+    }, 5000);
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const handleStartRecording = async () => {
@@ -170,7 +215,8 @@ const Collect: React.FC = () => {
         text: {
           standard: currentSentence.t,
           romanized: currentSentence.r,
-          translated: translatedText
+          translated: translatedText,
+          emotion_tag: emotionTag
         },
         audio: base64Audio
       };
@@ -181,10 +227,12 @@ const Collect: React.FC = () => {
           clearInterval(progressInterval);
           setUploadProgress(100);
           
+          saveToLocalStorage(currentSentence.t, translatedText, emotionTag);
+          
           setTimeout(() => {
             setContributionStats({ 
-              totalVoices: 0, 
-              contributorRank: 0 
+              totalVoices: parseInt(localStorage.getItem('odiaTtsVoiceCount') || '1', 10), 
+              contributorRank: 128 
             });
             setShowSuccess(true);
           }, 500);
@@ -200,10 +248,17 @@ const Collect: React.FC = () => {
           clearInterval(progressInterval);
           setUploadProgress(100);
 
+          saveToLocalStorage(currentSentence.t, translatedText, emotionTag);
+
           if (result.stats) {
             setContributionStats({
               totalVoices: result.stats.totalVoices,
               contributorRank: result.stats.contributorRank
+            });
+          } else {
+             setContributionStats({
+              totalVoices: parseInt(localStorage.getItem('odiaTtsVoiceCount') || '1', 10),
+              contributorRank: 128
             });
           }
           setTimeout(() => {
@@ -220,12 +275,36 @@ const Collect: React.FC = () => {
     }
   };
 
+  const saveToLocalStorage = (standardText: string, transText: string, emotion: string) => {
+    const savedVoicesCount = parseInt(localStorage.getItem('odiaTtsVoiceCount') || '0', 10) + 1;
+    localStorage.setItem('odiaTtsVoiceCount', savedVoicesCount.toString());
+    
+    if (savedVoicesCount >= 52) {
+      setShowCompletionBadge(true);
+    }
+    
+    const currentRecordings = JSON.parse(localStorage.getItem('odiaTtsRecordings') || '[]');
+    currentRecordings.push({
+       id: Date.now(),
+       text: standardText,
+       translated: transText,
+       emotion: emotion,
+       dialect: metadata?.dialect || 'Unknown',
+       date: new Date().toLocaleString(),
+       duration: "00:04" // Mocked duration
+    });
+    localStorage.setItem('odiaTtsRecordings', JSON.stringify(currentRecordings));
+  };
+
   const handleSuccessClose = () => {
     setShowSuccess(false);
     // Reset for next sentence
     setTranslatedText('');
     setAudioBlob(null);
-    if (currentIndex < shuffledTextData.length - 1) {
+    setEmotionTag('[NEUTRAL]');
+    if (showCompletionBadge) {
+      navigate('/workspace/analytics');
+    } else if (currentIndex < shuffledTextData.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       navigate('/workspace/analytics');
@@ -264,7 +343,36 @@ const Collect: React.FC = () => {
       <div className="flex flex-1 pt-14 h-screen overflow-hidden">
         {/* Canvas */}
         <main className="flex-1 overflow-y-auto bg-[#0e0e0e] relative flex flex-col md:items-center md:justify-center p-6 md:p-12 pt-10 pb-24 md:pb-12">
-          <div className="w-full max-w-3xl flex flex-col gap-8">
+          
+          {/* Motivational Statement Banner */}
+          <div className="absolute top-4 md:top-8 left-0 w-full flex justify-center px-4 z-10 pointer-events-none">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 px-6 py-2 rounded-full text-xs md:text-sm text-white/80 tracking-wide flex items-center gap-2 shadow-xl transition-all duration-1000 ease-in-out animate-fade-in-out">
+              <span className="material-symbols-outlined text-red-500 text-sm animate-pulse">mic</span>
+              {MOTIVATIONAL_STATEMENTS[statementIndex]}
+            </div>
+          </div>
+
+          {showCompletionBadge && (
+             <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+                <div className="w-32 h-32 bg-yellow-500/20 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                  <span className="text-6xl">🏆</span>
+                </div>
+                <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 mb-4">
+                  Achievement Unlocked!
+                </h2>
+                <p className="text-lg text-white max-w-md mb-8">
+                  You have contributed all 52 voice samples. You are officially an Odia Voice Pioneer. Thank you!
+                </p>
+                <button 
+                  onClick={() => navigate('/workspace/analytics')}
+                  className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold uppercase tracking-widest rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all"
+                >
+                  View Your Stats
+                </button>
+             </div>
+          )}
+
+          <div className="w-full max-w-3xl flex flex-col gap-8 mt-12 md:mt-0">
             {/* Step 1: Reference */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-zinc-500 text-[10px] md:text-xs font-medium uppercase tracking-widest">
@@ -273,22 +381,46 @@ const Collect: React.FC = () => {
               </div>
               <div className="p-5 md:p-8 border border-white/10 rounded-xl bg-[#1c1b1b] flex flex-col gap-4">
                 <div className="flex justify-between items-start gap-4">
-                  <p className="font-sans text-white text-opacity-90 text-xl md:text-3xl leading-relaxed">{shuffledTextData[currentIndex].t}</p>
+                  <p className="font-sans text-white text-opacity-90 text-xl md:text-3xl leading-relaxed">
+                    <span className="text-zinc-500 mr-2 font-mono text-sm">{emotionTag}</span>
+                    {shuffledTextData[currentIndex].t}
+                  </p>
                   <span className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded whitespace-nowrap">{shuffledTextData[currentIndex].c}</span>
                 </div>
                 <p className="text-zinc-400 text-sm md:text-lg italic">"{shuffledTextData[currentIndex].r}"</p>
                 <div className="flex items-center gap-2 mt-2 p-3 bg-zinc-800/50 rounded-lg border border-zinc-700/50">
                   <span className="material-symbols-outlined text-zinc-400 text-sm">lightbulb</span>
-                  <p className="text-zinc-300 text-xs md:text-sm italic">{shuffledTextData[currentIndex].tip}</p>
+                  <p className="text-zinc-300 text-xs md:text-sm italic">
+                    {emotionTag === '[GENTLE]' && 'Speak softly, warmly, and with care. '}
+                    {emotionTag === '[ANGRY]' && 'Speak loudly, with frustration or sharp tone. '}
+                    {emotionTag === '[FAST]' && 'Speak quickly, like you are in a rush. '}
+                    {emotionTag === '[SLOW]' && 'Speak very slowly, pausing between words. '}
+                    {emotionTag === '[NEUTRAL]' && shuffledTextData[currentIndex].tip}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Step 2: Input */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-white text-[10px] md:text-xs font-medium uppercase tracking-widest">
-                <span className="material-symbols-outlined text-sm">translate</span>
-                <span>How do you say this naturally in your dialect?</span>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-2 text-white text-[10px] md:text-xs font-medium uppercase tracking-widest">
+                  <span className="material-symbols-outlined text-sm">translate</span>
+                  <span>How do you say this naturally in your dialect?</span>
+                </div>
+                
+                {/* Emotion Tag Selector */}
+                <div className="flex items-center gap-2 bg-[#1c1b1b] p-1 rounded-lg border border-white/10 overflow-x-auto w-full md:w-auto hide-scrollbar">
+                  {['[NEUTRAL]', '[GENTLE]', '[ANGRY]', '[FAST]', '[SLOW]'].map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setEmotionTag(tag)}
+                      className={`px-3 py-1.5 rounded-md text-[10px] font-mono whitespace-nowrap transition-colors ${emotionTag === tag ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:bg-white/10 hover:text-white'}`}
+                    >
+                      {tag.replace('[', '').replace(']', '')}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="relative">
                 <textarea

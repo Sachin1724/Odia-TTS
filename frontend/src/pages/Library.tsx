@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Library: React.FC = () => {
-  const dummyRecordings = [
-    { id: 1, text: "ଆଜି ଆକାଶ ବହୁତ ସୁନ୍ଦର ଦେଖାଯାଉଛି।", duration: "00:04", date: "2026-04-30 10:23 AM" },
-    { id: 2, text: "ଓଡ଼ିଆ ଭାଷା ଆମ ମାତୃଭାଷା ଏବଂ ଆମ ଗର୍ବ।", duration: "00:06", date: "2026-04-30 10:25 AM" },
-    { id: 3, text: "ତୁ କ'ଣ ଖାଇଲୁ ଆଜି?", duration: "00:02", date: "2026-04-30 10:28 AM" },
-  ];
+  const [recordings, setRecordings] = useState<any[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('odiaTtsRecordings');
+    if (saved) {
+      setRecordings(JSON.parse(saved).reverse());
+    }
+  }, []);
+
+  const handleDelete = (id: number) => {
+    const updated = recordings.filter(rec => rec.id !== id);
+    setRecordings(updated);
+    localStorage.setItem('odiaTtsRecordings', JSON.stringify(updated.reverse())); // reverse back for storage to append properly if we cared, but we just stringify the current order and reverse on load
+    // Actually simpler:
+    const fromStorage = JSON.parse(localStorage.getItem('odiaTtsRecordings') || '[]');
+    const newStorage = fromStorage.filter((rec: any) => rec.id !== id);
+    localStorage.setItem('odiaTtsRecordings', JSON.stringify(newStorage));
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -22,18 +35,25 @@ const Library: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyRecordings.map((rec) => (
+            {recordings.map((rec) => (
               <tr key={rec.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                <td className="px-6 py-4 font-sans text-white text-lg">{rec.text}</td>
-                <td className="px-6 py-4 font-mono">{rec.duration}</td>
+                <td className="px-6 py-4">
+                  <p className="font-sans text-white text-lg">{rec.text}</p>
+                  {rec.emotion && <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mt-1 block">{rec.emotion} • {rec.dialect}</span>}
+                </td>
+                <td className="px-6 py-4 font-mono">{rec.duration || "00:00"}</td>
                 <td className="px-6 py-4 font-mono text-xs">{rec.date}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 bg-zinc-800 rounded text-white hover:bg-zinc-700 transition-colors">
+                    <button className="p-2 bg-zinc-800 rounded text-white hover:bg-zinc-700 transition-colors" title="Play functionality coming soon">
                       <span className="material-symbols-outlined text-[18px]">play_arrow</span>
                     </button>
-                    <button className="p-2 bg-zinc-800 rounded text-white hover:bg-zinc-700 transition-colors">
-                      <span className="material-symbols-outlined text-[18px]">download</span>
+                    <button 
+                      onClick={() => handleDelete(rec.id)}
+                      className="p-2 bg-red-500/10 text-red-500 rounded hover:bg-red-500/20 transition-colors"
+                      title="Delete recording"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
                     </button>
                   </div>
                 </td>
@@ -42,9 +62,10 @@ const Library: React.FC = () => {
           </tbody>
         </table>
         
-        {dummyRecordings.length === 0 && (
-          <div className="p-12 text-center text-zinc-500">
-            No recordings found. Head to the Voice Recorder to get started.
+        {recordings.length === 0 && (
+          <div className="p-12 text-center text-zinc-500 flex flex-col items-center gap-4">
+            <span className="material-symbols-outlined text-4xl opacity-50">mic_off</span>
+            <p>No recordings found. Head to the Voice Recorder to get started.</p>
           </div>
         )}
       </div>
