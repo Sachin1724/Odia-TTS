@@ -234,14 +234,19 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                 {/* Screenshot branding footer — visible in captured image only */}
                 <div className="mt-2 mb-6 flex flex-col items-center gap-1 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
                   <p className="text-[11px] font-semibold tracking-widest uppercase text-zinc-500">
-                    Contributed via
+                    Voice contributed by
                   </p>
-                  <p className="text-sm font-bold text-white/80 tracking-tight">
-                    BHASA<span className="text-red-500">.</span>ODIA
+                  <p className="text-base font-bold text-white tracking-tight mt-0.5">
+                    {contributorName || 'Anonymous'}
                   </p>
-                  <p className="text-[10px] text-zinc-600 mt-0.5">
-                    odia-tts-tan.vercel.app
-                  </p>
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <span className="text-[10px] text-zinc-600">via</span>
+                    <span className="text-[11px] font-bold text-zinc-400 tracking-tight">
+                      BHASA<span className="text-red-500">.</span>ODIA
+                    </span>
+                    <span className="text-[10px] text-zinc-600">·</span>
+                    <span className="text-[10px] text-zinc-600">odia-tts-tan.vercel.app</span>
+                  </div>
                 </div>
 
                 {/* CTAs — excluded from screenshot */}
