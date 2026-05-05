@@ -143,14 +143,14 @@ const Analytics: React.FC = () => {
             <span className="text-xs text-zinc-500 uppercase tracking-widest font-mono">Live Ranking</span>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
             <table className="w-full text-left text-sm text-zinc-400">
-              <thead className="text-xs uppercase tracking-widest text-zinc-500 border-b border-white/10">
+              <thead className="text-[10px] md:text-xs uppercase tracking-widest text-zinc-500 border-b border-white/10">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Rank</th>
-                  <th className="px-4 py-3 font-medium">Contributor</th>
-                  <th className="px-4 py-3 font-medium">Voices</th>
-                  <th className="px-4 py-3 font-medium">District</th>
+                  <th className="px-2 md:px-4 py-3 font-medium">Rank</th>
+                  <th className="px-2 md:px-4 py-3 font-medium">Contributor</th>
+                  <th className="px-2 md:px-4 py-3 font-medium">Voices</th>
+                  <th className="px-2 md:px-4 py-3 font-medium">District</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,25 +163,25 @@ const Analytics: React.FC = () => {
                     ) : (
                       stats.leaderboard.map((user, index) => (
                         <tr key={index} className={`border-b border-white/5 transition-colors ${index === 0 ? 'bg-yellow-500/5 hover:bg-yellow-500/10' : index === 1 ? 'bg-zinc-100/5 hover:bg-zinc-100/10' : index === 2 ? 'bg-amber-600/5 hover:bg-amber-600/10' : 'hover:bg-white/5'}`}>
-                          <td className={`px-4 py-4 ${index < 3 ? 'text-xl' : 'font-mono text-zinc-500 text-center'}`}>
+                          <td className={`px-2 md:px-4 py-3 md:py-4 ${index < 3 ? 'text-base md:text-xl' : 'font-mono text-zinc-500 text-center text-[10px] md:text-sm'}`}>
                             {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
                           </td>
-                          <td className={`px-4 py-4 font-medium flex items-center gap-2 ${index === 0 ? 'text-yellow-400 font-bold' : index === 1 ? 'text-zinc-200' : index === 2 ? 'text-zinc-300' : 'text-zinc-400'}`}>
-                            {user.name}
-                            {index === 0 && <span className="text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ml-2">Top</span>}
+                          <td className={`px-2 md:px-4 py-3 md:py-4 font-medium flex items-center gap-1 md:gap-2 text-[10px] md:text-sm leading-tight ${index === 0 ? 'text-yellow-400 font-bold' : index === 1 ? 'text-zinc-200' : index === 2 ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                            <span className="truncate max-w-[100px] md:max-w-[200px] inline-block">{user.name}</span>
+                            {index === 0 && <span className="text-[8px] md:text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Top</span>}
                           </td>
-                          <td className={`px-4 py-4 font-mono ${index === 0 ? 'text-yellow-400 font-bold' : 'text-zinc-200'}`}>{user.voices}</td>
-                          <td className="px-4 py-4">{user.district}</td>
+                          <td className={`px-2 md:px-4 py-3 md:py-4 font-mono text-[10px] md:text-sm ${index === 0 ? 'text-yellow-400 font-bold' : 'text-zinc-200'}`}>{user.voices}</td>
+                          <td className="px-2 md:px-4 py-3 md:py-4 text-[10px] md:text-sm truncate max-w-[70px] md:max-w-none">{user.district}</td>
                         </tr>
                       ))
                     )}
                     
                     {localVoices > 0 && (
                       <tr className="bg-red-500/10 border-t border-red-500/30">
-                        <td className="px-4 py-4 font-mono text-red-400 text-center">#</td>
-                        <td className="px-4 py-4 font-medium text-red-400">You</td>
-                        <td className="px-4 py-4 font-mono text-white font-bold">{localVoices}</td>
-                        <td className="px-4 py-4 text-red-400/70">Local</td>
+                        <td className="px-2 md:px-4 py-3 md:py-4 font-mono text-red-400 text-center text-[10px] md:text-sm">#</td>
+                        <td className="px-2 md:px-4 py-3 md:py-4 font-medium text-red-400 text-[10px] md:text-sm">You</td>
+                        <td className="px-2 md:px-4 py-3 md:py-4 font-mono text-white font-bold text-[10px] md:text-sm">{localVoices}</td>
+                        <td className="px-2 md:px-4 py-3 md:py-4 text-red-400/70 text-[10px] md:text-sm">Local</td>
                       </tr>
                     )}
                   </>
@@ -191,7 +191,7 @@ const Analytics: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-[#1c1b1b] border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center gap-4">
+        <div className="bg-[#1c1b1b] border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center gap-4 self-start sticky top-6">
           <div className="w-24 h-24 rounded-full border-4 border-zinc-800 flex items-center justify-center relative">
             <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                <circle cx="50" cy="50" r="46" fill="none" stroke="#27272a" strokeWidth="8" />

@@ -35,10 +35,16 @@ const Onboarding: React.FC = () => {
     <div className="bg-[#141313] text-[#e5e2e1] font-sans min-h-screen flex flex-col items-center pt-20 md:pt-8 md:justify-center p-8 pb-24 md:pb-8 relative">
       <BackgroundOverlay opacity={0.01} />
       <div className="w-full max-w-lg relative">
-        <Link to="/" className="absolute -top-12 left-0 flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-medium">
-          <span className="material-symbols-outlined text-sm">arrow_back</span>
-          Back to Home
-        </Link>
+        <div className="absolute -top-12 left-0 w-full flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-medium">
+            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            Back to Home
+          </Link>
+          <Link to="/workspace/analytics" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-medium">
+            Workspace
+            <span className="material-symbols-outlined text-sm">space_dashboard</span>
+          </Link>
+        </div>
         {/* Header */}
         <header className="mb-12 text-center">
           <h1 className="text-3xl font-semibold text-white mb-2">OdiaTTS Research</h1>

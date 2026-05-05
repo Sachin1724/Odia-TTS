@@ -298,10 +298,9 @@ const Collect: React.FC = () => {
 
   const handleSuccessClose = () => {
     setShowSuccess(false);
-    // Reset for next sentence
     setTranslatedText('');
     setAudioBlob(null);
-    setEmotionTag('[NEUTRAL]');
+    
     if (showCompletionBadge) {
       navigate('/workspace/analytics');
     } else if (currentIndex < shuffledTextData.length - 1) {
@@ -332,6 +331,10 @@ const Collect: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center gap-4 flex-shrink-0">
+          <Link to="/workspace/analytics" className="hidden md:flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors text-[10px] md:text-xs uppercase tracking-widest font-medium bg-white/5 px-3 py-1.5 rounded border border-white/10">
+            Workspace
+            <span className="material-symbols-outlined text-sm">space_dashboard</span>
+          </Link>
           <div className="flex items-center gap-2 text-zinc-400 font-mono text-[10px] md:text-sm">
             <span className="hidden md:inline">Speaker:</span>
             <span className="text-white max-w-[80px] md:max-w-none truncate">{metadata.name}</span>
@@ -375,10 +378,17 @@ const Collect: React.FC = () => {
           <div className="w-full max-w-3xl flex flex-col gap-8 mt-12 md:mt-0">
             {/* Step 1: Reference */}
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-zinc-500 text-[10px] md:text-xs font-medium uppercase tracking-widest">
-                <span className="material-symbols-outlined text-sm">library_books</span>
-                <span>Standard Reference ({currentIndex + 1}/{shuffledTextData.length})</span>
-              </div>
+              {parseInt(localStorage.getItem('odiaTtsVoiceCount') || '0', 10) >= shuffledTextData.length ? (
+                <div className="flex items-center gap-2 text-green-500 text-[10px] md:text-xs font-medium uppercase tracking-widest bg-green-500/10 px-3 py-1.5 rounded-lg w-fit border border-green-500/20">
+                  <span className="material-symbols-outlined text-sm">check_circle</span>
+                  <span>Completed ({shuffledTextData.length}/{shuffledTextData.length})</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-zinc-500 text-[10px] md:text-xs font-medium uppercase tracking-widest">
+                  <span className="material-symbols-outlined text-sm">library_books</span>
+                  <span>Standard Reference ({currentIndex + 1}/{shuffledTextData.length})</span>
+                </div>
+              )}
               <div className="p-5 md:p-8 border border-white/10 rounded-xl bg-[#1c1b1b] flex flex-col gap-4">
                 <div className="flex justify-between items-start gap-4">
                   <p className="font-sans text-white text-opacity-90 text-xl md:text-3xl leading-relaxed">
@@ -424,7 +434,7 @@ const Collect: React.FC = () => {
               </div>
               <div className="relative">
                 <textarea
-                  className="w-full bg-[#1c1b1b] border border-white/10 rounded-xl p-5 md:p-8 font-sans text-lg md:text-2xl text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 resize-none min-h-[140px]"
+                  className="w-full bg-[#1c1b1b] border border-white/10 rounded-xl p-4 md:p-6 font-sans text-sm md:text-lg text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 resize-none min-h-[60px]"
                   placeholder="Type the regional dialect here using English script or copy the text if its same and paste here.. "
                   value={translatedText}
                   onChange={(e) => setTranslatedText(e.target.value)}
@@ -433,7 +443,7 @@ const Collect: React.FC = () => {
             </div>
 
             {/* Step 3: Recording Actions */}
-            <div className="flex flex-col items-center justify-center pt-8 border-t border-white/10 gap-8 mt-4">
+            <div className="flex flex-col items-center justify-center pt-4 border-t border-white/10 gap-4 mt-2">
                {isRecording && (
                 <div className="w-full h-16 flex items-center justify-center gap-1 opacity-50 animate-pulse">
                   <div className="w-1 h-4 bg-red-500 rounded-full"></div>
@@ -444,21 +454,41 @@ const Collect: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4">
-                <button
-                  onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-                  disabled={currentIndex === 0 || isSubmitting}
-                  className={`w-full md:w-auto px-6 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === 0 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
-                >
-                  <span className="material-symbols-outlined text-sm">arrow_back</span>
-                  <span>Previous</span>
-                </button>
+              <div className="flex flex-col w-full gap-2 mt-0">
+                {/* Row 1: Previous & Next */}
+                <div className="grid grid-cols-2 gap-3 w-full">
+                  <button
+                    onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+                    disabled={currentIndex === 0 || isSubmitting}
+                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === 0 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
+                  >
+                    <span className="material-symbols-outlined text-sm">arrow_back</span>
+                    <span>Previous</span>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (audioBlob && !isSubmitting) {
+                        handleSave();
+                      } else {
+                        setTranslatedText('');
+                        setAudioBlob(null);
+                        setCurrentIndex(Math.min(shuffledTextData.length - 1, currentIndex + 1));
+                      }
+                    }}
+                    disabled={currentIndex === shuffledTextData.length - 1 || isSubmitting}
+                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === shuffledTextData.length - 1 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
+                    title="Skip to next sentence or auto-save"
+                  >
+                    <span>Next</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </button>
+                </div>
 
-                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full md:w-auto">
-                  {!isRecording ? (
+                {/* Row 2: Record */}
+                {!isRecording ? (
                   <button 
                     onClick={handleStartRecording}
-                    className="w-full md:w-auto px-8 py-3 bg-red-600 text-white rounded-lg text-[10px] md:text-xs font-medium uppercase hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+                    className="w-full px-8 py-3 bg-red-600 text-white rounded-lg text-[10px] md:text-xs font-medium uppercase hover:bg-red-700 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
                   >
                     <span className="material-symbols-outlined text-sm">mic</span>
                     {audioBlob ? "Retake Audio" : "Start Recording"}
@@ -466,65 +496,49 @@ const Collect: React.FC = () => {
                 ) : (
                   <button 
                     onClick={handleStopRecording}
-                    className="w-full md:w-auto px-8 py-3 bg-zinc-700 text-white rounded-lg text-[10px] md:text-xs font-medium uppercase hover:bg-zinc-600 transition-colors flex items-center justify-center gap-2"
+                    className="w-full px-8 py-3 bg-zinc-700 text-white rounded-lg text-[10px] md:text-xs font-medium uppercase hover:bg-zinc-600 transition-colors flex items-center justify-center gap-2 animate-pulse"
                   >
                     <span className="material-symbols-outlined text-sm">stop_circle</span>
                     Stop Recording
                   </button>
                 )}
 
+                {/* Row 3: Hear (Play) */}
                 {audioBlob && !isRecording && (
                   <button 
                     onClick={handlePlayRecording}
-                    className={`w-full md:w-auto px-6 py-3 border border-white/10 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${isPlaying ? 'bg-white text-black' : 'bg-transparent text-white hover:bg-white/5'}`}
+                    className={`w-full px-6 py-3 border border-white/10 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${isPlaying ? 'bg-white text-black' : 'bg-transparent text-white hover:bg-white/5'}`}
                   >
                     <span className="material-symbols-outlined text-sm">{isPlaying ? 'stop' : 'hearing'}</span>
                     <span>{isPlaying ? 'Playing...' : 'Hear Record'}</span>
                   </button>
                 )}
 
-                <div className="flex items-center gap-2 w-full md:w-auto">
-                  <div className="flex flex-col gap-1.5 flex-1 md:flex-none">
-                    <button 
-                      onClick={handleSave}
-                      disabled={!audioBlob || !translatedText || isSubmitting}
-                      className={`relative overflow-hidden w-full md:w-auto px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-all ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
-                    >
-                      <span className="relative z-20">{isSubmitting ? 'Saving...' : 'Save'}</span>
-                      <span className="material-symbols-outlined text-sm relative z-20">check_circle</span>
-                      
-                      {isSubmitting && (
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono opacity-30 z-20">
-                          {uploadProgress}%
-                        </span>
-                      )}
-                    </button>
-                    
-                    {/* Progress Bar (Only under Save button) */}
-                    {isSubmitting && (
-                      <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-white transition-all duration-300 ease-out"
-                          style={{ width: `${uploadProgress}%` }}
-                        ></div>
-                      </div>
-                    )}
-                  </div>
-                  
+                {/* Row 4: Save */}
+                <div className="flex flex-col gap-1.5 w-full">
                   <button 
-                    onClick={() => {
-                      setTranslatedText('');
-                      setAudioBlob(null);
-                      setCurrentIndex(Math.min(shuffledTextData.length - 1, currentIndex + 1));
-                    }}
-                    disabled={currentIndex === shuffledTextData.length - 1 || isSubmitting}
-                    className={`px-4 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-colors ${(currentIndex === shuffledTextData.length - 1 || isSubmitting) ? 'opacity-50 cursor-not-allowed text-zinc-600' : 'bg-transparent text-white border border-white/10 hover:bg-white/5'}`}
-                    title="Skip to next sentence"
+                    onClick={handleSave}
+                    disabled={!audioBlob || !translatedText || isSubmitting}
+                    className={`relative overflow-hidden w-full px-8 py-3 rounded-lg text-[10px] md:text-xs font-medium uppercase flex items-center justify-center gap-2 transition-all ${(!audioBlob || !translatedText || isSubmitting) ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-white text-black hover:bg-zinc-200'}`}
                   >
-                    <span>Next</span>
-                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    <span className="relative z-20">{isSubmitting ? 'Saving...' : 'Save'}</span>
+                    <span className="material-symbols-outlined text-sm relative z-20">check_circle</span>
+                    
+                    {isSubmitting && (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono opacity-30 z-20">
+                        {uploadProgress}%
+                      </span>
+                    )}
                   </button>
-                </div>
+                  
+                  {isSubmitting && (
+                    <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-white transition-all duration-300 ease-out"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
