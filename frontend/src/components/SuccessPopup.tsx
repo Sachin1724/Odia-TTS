@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, PlusCircle, Users, Heart, Loader2 } from 'lucide-react';
-import html2canvas from 'html2canvas';
+import { toBlob } from 'html-to-image';
 
 interface SuccessPopupProps {
   isOpen: boolean;
@@ -30,20 +30,17 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     setIsSharing(true);
 
     try {
-      const canvas = await html2canvas(popupRef.current, {
+      // html-to-image supports modern CSS color spaces (oklab, oklch) unlike html2canvas
+      const blob = await toBlob(popupRef.current, {
+        pixelRatio: 2,
         backgroundColor: '#18181b', // matches zinc-900
-        scale: 2,
-        useCORS: true,
-        logging: false,
+        filter: (node) => {
+          // Exclude elements marked to be ignored in the screenshot
+          return !node.dataset?.html2canvasIgnore && node.getAttribute?.('data-html2canvas-ignore') !== 'true';
+        },
       });
 
-      // Wrap toBlob in a Promise so we properly await it
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((b) => {
-          if (b) resolve(b);
-          else reject(new Error('Failed to generate image blob'));
-        }, 'image/png');
-      });
+      if (!blob) throw new Error('Failed to generate image blob');
 
       const file = new File([blob], 'odia-tts-contribution.png', { type: 'image/png' });
 
