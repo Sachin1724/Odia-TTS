@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, PlusCircle, Users, Heart } from 'lucide-react';
+import { Share2, PlusCircle, Users, Heart, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 interface SuccessPopupProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface SuccessPopupProps {
   onRecordAnother: () => void;
   contributorCount?: number;
   totalVoices?: number;
+  contributorName?: string;
 }
 
 const SuccessPopup: React.FC<SuccessPopupProps> = ({
@@ -15,9 +17,62 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   onClose,
   onRecordAnother,
   contributorCount = 128,
-  totalVoices = 1245
+  totalVoices = 1245,
+  contributorName = ''
 }) => {
   const [showContent, setShowContent] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShare = async () => {
+    if (!popupRef.current || isSharing) return;
+    
+    try {
+      setIsSharing(true);
+      const canvas = await html2canvas(popupRef.current, {
+        backgroundColor: null,
+        scale: 2,
+      });
+      
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        
+        const file = new File([blob], 'odia-tts-contribution.png', { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'Odia-TTS Contribution',
+              text: 'I just contributed my voice to Odisha\'s digital future! Join me at Odia-TTS.',
+              files: [file]
+            });
+          } catch (error) {
+            console.log('Share was canceled or failed', error);
+            if ((error as Error).name !== 'AbortError') {
+               downloadFile(blob);
+            }
+          }
+        } else {
+          downloadFile(blob);
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error generating screenshot:', error);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const downloadFile = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'odia-tts-contribution.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -78,6 +133,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-zinc-900/80 p-8 shadow-2xl backdrop-blur-xl touch-none"
+            ref={popupRef}
           >
             {/* Background Glow */}
             <div className="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-red-600/20 blur-3xl" />
@@ -109,6 +165,9 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                 </p>
                 <p className="mb-4 text-sm text-zinc-400">
                   Your voice is now part of Odisha’s digital future.
+                  <span className="block mt-2 font-medium text-white/90">
+                    Thank you, {contributorName || 'Contributor'}, for contributing!
+                  </span>
                 </p>
 
                 <div className="mb-6 flex flex-col items-center gap-1">
@@ -145,7 +204,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                 </motion.div>
 
                 {/* CTAs */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3" data-html2canvas-ignore="true">
                   <button
                     onClick={onRecordAnother}
                     className="flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-black transition-all hover:bg-zinc-200 active:scale-95"
@@ -154,27 +213,21 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
                     Record Another Dialect
                   </button>
                   <button
-                    onClick={() => {
-                       if (navigator.share) {
-                         navigator.share({
-                           title: 'Odia-TTS Contribution',
-                           text: 'I just contributed my voice to Odisha\'s digital future! Join me at Odia-TTS.',
-                           url: window.location.origin
-                         });
-                       }
-                    }}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95"
+                    onClick={handleShare}
+                    disabled={isSharing}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Share2 size={18} />
-                    Share with a friend
+                    {isSharing ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}
+                    {isSharing ? 'Sharing...' : 'Share with a friend'}
                   </button>
                 </div>
               </motion.div>
             </div>
 
-            {/* Close Button (Optional if auto-close is used, but good for UX) */}
+            {/* Close Button */}
             <button
               onClick={onClose}
+              data-html2canvas-ignore="true"
               className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-lg">close</span>
