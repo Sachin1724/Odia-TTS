@@ -2,19 +2,31 @@ import React, { useEffect, useState } from 'react';
 
 const Library: React.FC = () => {
   const [recordings, setRecordings] = useState<any[]>([]);
+  const [userName, setUserName] = useState<string>('My');
 
   useEffect(() => {
     const saved = localStorage.getItem('odiaTtsRecordings');
     if (saved) {
       setRecordings(JSON.parse(saved).reverse());
     }
+    
+    const meta = localStorage.getItem('odiaTtsMetadata');
+    if (meta) {
+      try {
+        const parsedMeta = JSON.parse(meta);
+        if (parsedMeta.name) {
+          setUserName(`${parsedMeta.name}'s`);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
   }, []);
 
   const handleDelete = (id: number) => {
     const updated = recordings.filter(rec => rec.id !== id);
     setRecordings(updated);
-    localStorage.setItem('odiaTtsRecordings', JSON.stringify(updated.reverse())); // reverse back for storage to append properly if we cared, but we just stringify the current order and reverse on load
-    // Actually simpler:
+    
     const fromStorage = JSON.parse(localStorage.getItem('odiaTtsRecordings') || '[]');
     const newStorage = fromStorage.filter((rec: any) => rec.id !== id);
     localStorage.setItem('odiaTtsRecordings', JSON.stringify(newStorage));
@@ -22,7 +34,7 @@ const Library: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-2xl font-semibold text-white mb-2">My Recordings</h2>
+      <h2 className="text-2xl font-semibold text-white mb-2">{userName} Recordings</h2>
       
       <div className="bg-[#1c1b1b] border border-white/10 rounded-xl overflow-hidden">
         <table className="w-full text-left text-sm text-zinc-400">
