@@ -79,16 +79,27 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   const captureBlob = async (): Promise<Blob> => {
     if (!popupRef.current) throw new Error('Popup ref not ready');
 
-    // Step 1: Capture the popup card with a transparent background
-    const cardBlob = await toBlob(popupRef.current, {
-      pixelRatio: 2,
-      filter: (node) => node.getAttribute?.('data-html2canvas-ignore') !== 'true',
-    });
+    // Hide ignored elements BEFORE toBlob clones the DOM.
+    // html-to-image's filter() removes the elements visually but the parent's
+    // computed height was measured WITH those children, leaving blank space.
+    // Setting display:none first collapses the layout correctly.
+    const ignoredEls = Array.from(
+      popupRef.current.querySelectorAll<HTMLElement>('[data-html2canvas-ignore="true"]')
+    );
+    ignoredEls.forEach(el => { el.style.display = 'none'; });
+
+    let cardBlob: Blob | null = null;
+    try {
+      cardBlob = await toBlob(popupRef.current, { pixelRatio: 2 });
+    } finally {
+      // Always restore the elements, even if capture fails
+      ignoredEls.forEach(el => { el.style.display = ''; });
+    }
     if (!cardBlob) throw new Error('Failed to generate image blob');
 
-    // Step 2: Composite the card onto a canvas with the site's gradient background
+    // Composite the card onto a canvas with the site's gradient background
     const img = await createImageBitmap(cardBlob);
-    const padding = 56; // px of breathing room around the card
+    const padding = 56;
     const totalW = img.width + padding * 2;
     const totalH = img.height + padding * 2;
 
@@ -101,7 +112,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     ctx.fillStyle = '#18181b';
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Red glow: top-left, matching the site's `bg-red-600/20 blur-3xl` —
+    // — Red glow: top-left —
     const redGlow = ctx.createRadialGradient(
       totalW * 0.12, totalH * 0.08, 0,
       totalW * 0.12, totalH * 0.08, totalW * 0.65,
@@ -112,7 +123,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     ctx.fillStyle = redGlow;
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Orange glow: bottom-right, matching the site's `bg-orange-600/20 blur-3xl` —
+    // — Orange glow: bottom-right —
     const orangeGlow = ctx.createRadialGradient(
       totalW * 0.88, totalH * 0.92, 0,
       totalW * 0.88, totalH * 0.92, totalW * 0.65,
@@ -126,7 +137,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     // — Draw the captured card on top with padding —
     ctx.drawImage(img, padding, padding);
 
-    // Step 3: Export the final composite as a PNG blob
+    // Export final composite as PNG
     return new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((b) => {
         if (b) resolve(b);
