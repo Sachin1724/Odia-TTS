@@ -6,3 +6,10 @@ dist
 frontend/node_modules
 frontend/dist
 frontend/.env
+
+# Local test media and uploads
+*.wav
+*.webm
+*.mp3
+uploads/
+data/
