@@ -26,36 +26,50 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
 
   const handleShare = async () => {
     if (!popupRef.current || isSharing) return;
-    
+
+    setIsSharing(true);
+
     try {
-      setIsSharing(true);
       const canvas = await html2canvas(popupRef.current, {
-        backgroundColor: null,
+        backgroundColor: '#18181b', // matches zinc-900
         scale: 2,
+        useCORS: true,
+        logging: false,
       });
-      
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        
-        const file = new File([blob], 'odia-tts-contribution.png', { type: 'image/png' });
-        
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              title: 'Odia-TTS Contribution',
-              text: 'I just contributed my voice to Odisha\'s digital future! Join me at Odia-TTS.',
-              files: [file]
-            });
-          } catch (error) {
-            console.log('Share was canceled or failed', error);
-            if ((error as Error).name !== 'AbortError') {
-               downloadFile(blob);
-            }
+
+      // Wrap toBlob in a Promise so we properly await it
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => {
+          if (b) resolve(b);
+          else reject(new Error('Failed to generate image blob'));
+        }, 'image/png');
+      });
+
+      const file = new File([blob], 'odia-tts-contribution.png', { type: 'image/png' });
+
+      // Try native file share (works on mobile / supported browsers)
+      const canShareFiles =
+        typeof navigator.share === 'function' &&
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] });
+
+      if (canShareFiles) {
+        try {
+          await navigator.share({
+            title: 'Odia-TTS Contribution',
+            text: "I just contributed my voice to Odisha's digital future! Join me at Odia-TTS.",
+            files: [file],
+          });
+        } catch (error) {
+          // Only download if the user didn't intentionally cancel
+          if ((error as Error).name !== 'AbortError') {
+            downloadFile(blob);
           }
-        } else {
-          downloadFile(blob);
         }
-      }, 'image/png');
+      } else {
+        // Desktop fallback: download the screenshot directly
+        downloadFile(blob);
+      }
     } catch (error) {
       console.error('Error generating screenshot:', error);
     } finally {
