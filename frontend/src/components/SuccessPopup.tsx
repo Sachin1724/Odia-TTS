@@ -80,9 +80,6 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     if (!popupRef.current) throw new Error('Popup ref not ready');
 
     // Hide ignored elements BEFORE toBlob clones the DOM.
-    // html-to-image's filter() removes the elements visually but the parent's
-    // computed height was measured WITH those children, leaving blank space.
-    // Setting display:none first collapses the layout correctly.
     const ignoredEls = Array.from(
       popupRef.current.querySelectorAll<HTMLElement>('[data-html2canvas-ignore="true"]')
     );
@@ -92,12 +89,10 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     try {
       cardBlob = await toBlob(popupRef.current, { pixelRatio: 2 });
     } finally {
-      // Always restore the elements, even if capture fails
       ignoredEls.forEach(el => { el.style.display = ''; });
     }
     if (!cardBlob) throw new Error('Failed to generate image blob');
 
-    // Composite the card onto a canvas with the site's gradient background
     const img = await createImageBitmap(cardBlob);
     const padding = 60;
     const totalW = img.width + padding * 2;
@@ -108,11 +103,43 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     canvas.height = totalH;
     const ctx = canvas.getContext('2d')!;
 
-    // — Base dark background (#18181b = zinc-900) —
+    // ① Base dark background
     ctx.fillStyle = '#18181b';
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Red glow: top-left (stronger, larger radius) —
+    // ② Tile the odia_pattern.png — exactly what BackgroundOverlay does
+    //    (backgroundRepeat: repeat, backgroundSize: 500px, opacity: 0.06)
+    try {
+      const patternImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = reject;
+        // Use the same public path the site uses
+        el.src = '/assets/odia_pattern.png';
+      });
+
+      // Scale the pattern tile to 500px (matching backgroundSize: 500px)
+      // The canvas is at pixelRatio 2, so tile at 500px logical = 1000px physical
+      const tileSize = 500;
+      const offscreen = document.createElement('canvas');
+      offscreen.width = tileSize;
+      offscreen.height = tileSize;
+      const offCtx = offscreen.getContext('2d')!;
+      offCtx.drawImage(patternImg, 0, 0, tileSize, tileSize);
+
+      const pattern = ctx.createPattern(offscreen, 'repeat');
+      if (pattern) {
+        ctx.save();
+        ctx.globalAlpha = 0.06; // matches the site's opacity: 0.01 visually boosted for print
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, totalW, totalH);
+        ctx.restore();
+      }
+    } catch {
+      // Pattern load failed — continue without it gracefully
+    }
+
+    // ③ Red glow: top-left
     const redGlow = ctx.createRadialGradient(
       totalW * 0.08, totalH * 0.05, 0,
       totalW * 0.08, totalH * 0.05, totalW * 0.80,
@@ -124,7 +151,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     ctx.fillStyle = redGlow;
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Orange glow: bottom-right (stronger, larger radius) —
+    // ④ Orange glow: bottom-right
     const orangeGlow = ctx.createRadialGradient(
       totalW * 0.92, totalH * 0.95, 0,
       totalW * 0.92, totalH * 0.95, totalW * 0.80,
@@ -136,7 +163,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     ctx.fillStyle = orangeGlow;
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Subtle dark vignette overlay around the edges for depth —
+    // ⑤ Dark vignette for depth
     const vignette = ctx.createRadialGradient(
       totalW / 2, totalH / 2, totalW * 0.3,
       totalW / 2, totalH / 2, totalW * 0.85,
@@ -146,10 +173,9 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
     ctx.fillStyle = vignette;
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // — Draw the captured card on top with padding —
+    // ⑥ Draw the captured card on top
     ctx.drawImage(img, padding, padding);
 
-    // Export final composite as PNG
     return new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((b) => {
         if (b) resolve(b);
