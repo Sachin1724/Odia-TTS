@@ -41,6 +41,22 @@ const Analytics: React.FC = () => {
         const result = await response.json();
         if (result.status === 'success') {
           setStats(result.stats);
+          
+          try {
+            const savedMetadata = localStorage.getItem('odiaTtsMetadata');
+            if (savedMetadata) {
+              const meta = JSON.parse(savedMetadata);
+              const userName = (meta.name || meta.fullName || '').trim().toLowerCase();
+              const userStat = result.stats.leaderboard.find((u: any) => u.name.toLowerCase() === userName);
+              
+              if (userStat && userStat.voices > savedVoiceCount) {
+                setLocalVoices(userStat.voices);
+                localStorage.setItem('odiaTtsVoiceCount', userStat.voices.toString());
+              }
+            }
+          } catch(e) {
+            console.error('Error syncing local voices', e);
+          }
         }
       } catch (err) {
         console.error('Error fetching analytics:', err);

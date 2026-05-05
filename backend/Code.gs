@@ -108,16 +108,17 @@ function doGet(e) {
       if(row.length < 6) continue;
       
       const speakerId = row[1];
-      let name = row[2] ? row[2].replace(/^"|"$/g, '') : "Anonymous";
-      let district = row[5] ? row[5].replace(/^"|"$/g, '') : "Unknown";
+      let nameRaw = row[2] ? row[2].replace(/^"|"$/g, '') : "Anonymous";
+      let nameLower = nameRaw.trim().toLowerCase();
+      let district = row[5] ? row[5].replace(/^"|"$/g, '').trim() : "Unknown";
       
       speakerIds.add(speakerId);
       districts.add(district);
       
-      if (!contributorMap[name]) {
-        contributorMap[name] = { name: name, voices: 0, district: district };
+      if (!contributorMap[nameLower]) {
+        contributorMap[nameLower] = { name: nameRaw.trim(), voices: 0, district: district };
       }
-      contributorMap[name].voices += 1;
+      contributorMap[nameLower].voices += 1;
     }
     
     // Convert to array and sort by voices descending
